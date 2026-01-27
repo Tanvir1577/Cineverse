@@ -20,7 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { getCopyrightText } from '@/lib/year'
 
-const GENRES = ['Action', 'Animation', 'Adventure', 'Thriller', 'Crime', 'Comedy', 'Horror', 'Fantasy']
+const GENRES = ['Animation', 'Action', 'Adventure', 'Thriller', 'Crime', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi', 'Mystery', 'Horror']
 const LANGUAGES = ['English', 'Hindi', 'Japanese', 'Korean']
 const SUBTITLES = ['English', 'Hindi', 'Japanese', 'Korean']
 const QUALITIES = ['480p', '720p', '1080p']
@@ -537,17 +537,7 @@ export default function ContentForm({ params }: { params?: { id?: string } }) {
             {/* Download Groups */}
             <Card className="bg-gray-900/50 border-gray-800/50">
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-white">Download Links</CardTitle>
-                  <Button
-                    type="button"
-                    onClick={addDownloadGroup}
-                    className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Download Group
-                  </Button>
-                </div>
+                <CardTitle className="text-white">Download Links</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 {downloadGroups.map((group) => (
@@ -660,6 +650,18 @@ export default function ContentForm({ params }: { params?: { id?: string } }) {
                 )}
               </CardContent>
             </Card>
+
+            {/* Add Download Group Button - Moved to Bottom */}
+            <div className="flex justify-center">
+              <Button
+                type="button"
+                onClick={addDownloadGroup}
+                className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 w-full max-w-md"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Add Download Group
+              </Button>
+            </div>
 
             {/* Submit Button */}
             <div className="flex justify-end gap-4">
