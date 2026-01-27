@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Content {
+  id            String   @id @default(cuid())
+  contentType   String   // Movie, Series, Anime
+  mainTitle     String
+  secondaryTitle String
+  imageHtml     String
+  name          String?
+  season        String?
+  imdbRating    Float?
+  releaseYear   Int?
+  genre         String   // JSON string array
+  language      String   // JSON string array
+  subtitle      String   // JSON string array
+  quality       String   // JSON string array: 480p, 720p, 1080p
+  fileSize      String?
+  format        String?
+  storyline     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  downloadGroups DownloadGroup[]
+}
+
+model DownloadGroup {
+  id        String      @id @default(cuid())
+  contentId String
+  title     String
+  content   Content     @relation(fields: [contentId], references: [id], onDelete: Cascade)
+  links     DownloadLink[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model DownloadLink {
+  id              String        @id @default(cuid())
+  downloadGroupId String
+  title           String
+  url             String
+  quality         String        // 480p, 720p, 1080p
+  downloadGroup   DownloadGroup @relation(fields: [downloadGroupId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+}
