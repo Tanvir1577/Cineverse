@@ -20,10 +20,10 @@ import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { getCopyrightText } from '@/lib/year'
 
-const GENRES = ['Animation', 'Action', 'Adventure', 'Thriller', 'Crime', 'Comedy', 'Drama', 'Fantasy', 'Sci-Fi', 'Mystery', 'Horror']
+const GENRES = ['Animation', 'Action', 'Adventure', 'Thriller', 'Crime', 'Comedy', 'Drama', 'Romance', 'Fantasy', 'Sci-Fi', 'Mystery', 'Horror']
 const LANGUAGES = ['English', 'Hindi', 'Japanese', 'Korean']
 const SUBTITLES = ['English', 'Hindi', 'Japanese', 'Korean']
-const QUALITIES = ['480p', '720p', '1080p']
+const QUALITIES = ['480p', '720p', '1080p', '4K']
 const CONTENT_TYPES = ['Movie', 'Series', 'Anime']
 
 interface DownloadLink {
@@ -248,6 +248,8 @@ export default function ContentForm({ params }: { params?: { id?: string } }) {
         return 'bg-yellow-500/90'
       case '1080p':
         return 'bg-green-500/90'
+      case '4K':
+        return 'bg-purple-500/90'
       default:
         return 'bg-blue-500/90'
     }
