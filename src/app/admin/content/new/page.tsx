@@ -20,7 +20,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import Link from 'next/link'
 import { getCopyrightText } from '@/lib/year'
 
-const GENRES = ['Animation', 'Action', 'Adventure', 'Thriller', 'Crime', 'Comedy', 'Drama', 'Romance', 'Fantasy', 'Sci-Fi', 'Mystery', 'Horror']
+const GENRES = ['Animation', 'Action', 'Adventure', 'Thriller', 'Crime', 'Comedy', 'Drama', 'Romance', 'Fantasy', 'Sci-Fi', 'Mystery', 'Horror', 'Family', 'Sports']
 const LANGUAGES = ['English', 'Hindi', 'Japanese', 'Korean']
 const SUBTITLES = ['English', 'Hindi', 'Japanese', 'Korean']
 const QUALITIES = ['480p', '720p', '1080p', '4K']
