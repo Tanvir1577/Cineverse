@@ -130,7 +130,7 @@ export default function ContentDetail({ params }: { params: Promise<{ id: string
         {/* Back Button Mobile */}
         <div className="mb-6 md:hidden">
           <Link href="/">
-            <Button variant="outline" className="border-gray-700 text-gray-300">
+            <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white">
               <ArrowLeft className="w-4 h-4 mr-2" />
               Back
             </Button>

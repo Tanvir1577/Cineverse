@@ -667,11 +667,11 @@ export default function ContentForm({ params }: { params?: { id?: string } }) {
 
             {/* Submit Button */}
             <div className="flex justify-end gap-4">
-              <Link href="/admin/dashboard">
-                <Button variant="outline" className="border-gray-700 text-gray-300">
-                  Cancel
-                </Button>
-              </Link>
+<Link href="/admin/dashboard">
+  <Button variant="outline" className="border-gray-700 text-black-300">
+    Cancel
+  </Button>
+</Link>
               <Button
                 type="submit"
                 className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold px-8"
