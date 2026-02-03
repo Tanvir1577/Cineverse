@@ -31,6 +31,9 @@ export const metadata: Metadata = {
     title: "CineVerse",
     description: "Cineverse – Your universe for movies, TV series, and anime downloads.",
   },
+  other: {
+    "monetag": "ef69de7ce8e8810689cda4643e780697"
+  }
 };
 
 export default function RootLayout({
@@ -51,24 +54,7 @@ export default function RootLayout({
               // Only load ads if not on admin pages
               if (!window.location.pathname.startsWith('/admin')) {
                 (function(s){
-                  s.dataset.zone='9943154';
-                  s.src='https://forfrogadiertor.com/tag.min.js';
-                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
 
-                (function(s){
-                  s.dataset.zone='9942840';
-                  s.src='https://gizokraijaw.net/vignette.min.js';
-                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-
-                (function(s){
-                  s.dataset.zone='9942796';
-                  s.src='https://al5sm.com/tag.min.js';
-                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-
-                (function(s){
-                  s.dataset.zone='9938688';
-                  s.src='https://groleegni.net/vignette.min.js';
-                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
               }
             `,
           }}
