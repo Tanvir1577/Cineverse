@@ -304,9 +304,6 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             {activeFilter === 'all' ? 'All Content' : `${activeFilter}s`}
           </h2>
-          <p className="text-gray-400 text-sm">
-            {loading ? 'Loading...' : `${contents.length} items found`}
-          </p>
         </div>
 
         {/* Content Grid - Mobile Single Column / Desktop Multi-column */}
@@ -456,7 +453,7 @@ export default function Home() {
               </div>
               
               <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
-                Page {currentPage} of {totalPages} — {totalItems} {activeFilter === 'all' ? 'Items' : activeFilter + 's'} total
+                Page {currentPage} of {totalPages}
               </p>
             </div>
           </>
