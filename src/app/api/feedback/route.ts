@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { firestore } from '@/lib/firebase'
+import { collection, getDocs, addDoc, query, orderBy, deleteDoc, doc } from 'firebase/firestore'
 
 export async function POST(request: Request) {
   try {
@@ -14,20 +15,24 @@ export async function POST(request: Request) {
     }
 
     // Set expiration to 24 hours from now
-    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
+    const now = new Date()
+    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString()
+    const createdAt = now.toISOString()
 
-    const feedback = await db.feedback.create({
-      data: {
-        type,
-        title,
-        contentType: type === 'REQUEST' ? contentType : null,
-        message,
-        link: type === 'REPORT' ? link : null,
-        expiresAt,
-      },
-    })
+    const feedbackData = {
+      type,
+      title,
+      contentType: type === 'REQUEST' ? contentType : null,
+      message,
+      link: type === 'REPORT' ? link : null,
+      isRead: false,
+      createdAt,
+      expiresAt,
+    }
 
-    return NextResponse.json(feedback, { status: 201 })
+    const docRef = await addDoc(collection(firestore, 'feedback'), feedbackData)
+
+    return NextResponse.json({ id: docRef.id, ...feedbackData }, { status: 201 })
   } catch (error) {
     console.error('Failed to create feedback:', error)
     return NextResponse.json(
@@ -39,20 +44,33 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    // Basic cleanup: delete expired feedback when admin fetches
-    await db.feedback.deleteMany({
-      where: {
-        expiresAt: {
-          lt: new Date(),
-        },
-      },
+    const feedbackCollection = collection(firestore, 'feedback')
+    const q = query(feedbackCollection, orderBy('createdAt', 'desc'))
+    const querySnapshot = await getDocs(q)
+    
+    const now = new Date()
+    const feedback: any[] = []
+    const expiredIds: string[] = []
+
+    querySnapshot.forEach((document) => {
+      const data = document.data()
+      const expiresAt = new Date(data.expiresAt)
+
+      if (expiresAt < now) {
+        expiredIds.push(document.id)
+      } else {
+        feedback.push({
+          id: document.id,
+          ...data
+        })
+      }
     })
 
-    const feedback = await db.feedback.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    })
+    // Cleanup expired feedback asynchronously
+    if (expiredIds.length > 0) {
+      Promise.all(expiredIds.map(id => deleteDoc(doc(firestore, 'feedback', id))))
+        .catch(err => console.error('Failed to cleanup expired feedback:', err))
+    }
 
     return NextResponse.json(feedback)
   } catch (error) {

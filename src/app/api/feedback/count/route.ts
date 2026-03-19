@@ -1,25 +1,24 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { firestore } from '@/lib/firebase'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 
 export async function GET() {
   try {
-    // Cleanup expired feedback
-    await db.feedback.deleteMany({
-      where: {
-        expiresAt: {
-          lt: new Date(),
-        },
-      },
-    })
+    const feedbackCollection = collection(firestore, 'feedback')
+    // We filter for isRead: false. Expiration is checked manually to avoid complex queries without composite indexes.
+    const q = query(feedbackCollection, where('isRead', '==', false))
+    const querySnapshot = await getDocs(q)
+    
+    const now = new Date()
+    let count = 0
 
-    const count = await db.feedback.count({
+    querySnapshot.forEach((document) => {
+      const data = document.data()
+      const expiresAt = new Date(data.expiresAt)
 
-      where: {
-        isRead: false,
-        expiresAt: {
-          gt: new Date(),
-        },
-      },
+      if (expiresAt > now) {
+        count++
+      }
     })
 
     return NextResponse.json({ count })

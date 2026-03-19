@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { firestore } from '@/lib/firebase'
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
 export async function PATCH(
   request: Request,
@@ -10,12 +11,10 @@ export async function PATCH(
     const body = await request.json()
     const { isRead } = body
 
-    const feedback = await db.feedback.update({
-      where: { id },
-      data: { isRead },
-    })
+    const feedbackRef = doc(firestore, 'feedback', id)
+    await updateDoc(feedbackRef, { isRead })
 
-    return NextResponse.json(feedback)
+    return NextResponse.json({ id, isRead })
   } catch (error) {
     console.error('Failed to update feedback:', error)
     return NextResponse.json(
@@ -32,9 +31,7 @@ export async function DELETE(
   try {
     const { id } = params
 
-    await db.feedback.delete({
-      where: { id },
-    })
+    await deleteDoc(doc(firestore, 'feedback', id))
 
     return new NextResponse(null, { status: 204 })
   } catch (error) {
