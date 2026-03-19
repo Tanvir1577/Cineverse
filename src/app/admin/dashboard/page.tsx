@@ -15,6 +15,7 @@ import {
   Users,
   LogOut,
   Menu,
+  MessageSquarePlus,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -64,6 +65,7 @@ export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('')
   const [contents, setContents] = useState<Content[]>([])
   const [stats, setStats] = useState<Stats>({ movies: 0, series: 0, anime: 0, total: 0 })
+  const [unreadFeedback, setUnreadFeedback] = useState(0)
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState<string | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -71,7 +73,20 @@ export default function AdminDashboard() {
   useEffect(() => {
     checkAuth()
     fetchContents()
+    fetchUnreadCount()
   }, [])
+
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await fetch('/api/feedback/count')
+      if (response.ok) {
+        const data = await response.json()
+        setUnreadFeedback(data.count)
+      }
+    } catch (error) {
+      console.error('Failed to fetch unread count:', error)
+    }
+  }
 
   const checkAuth = () => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -86,9 +101,10 @@ export default function AdminDashboard() {
   const fetchContents = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/content')
+      const response = await fetch('/api/content?limit=1000') // Fetch more for admin stats
       if (response.ok) {
-        const data = await response.json()
+        const result = await response.json()
+        const data = result.contents || []
         setContents(data)
 
         // Calculate stats
@@ -184,6 +200,17 @@ export default function AdminDashboard() {
             </div>
 
             <div className="flex items-center gap-2">
+              <Link href="/admin/feedback">
+                <Button variant="outline" className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 relative">
+                  <MessageSquarePlus className="w-4 h-4 mr-2" />
+                  <span>Feedback</span>
+                  {unreadFeedback > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white border-2 border-black">
+                      {unreadFeedback}
+                    </span>
+                  )}
+                </Button>
+              </Link>
               <Link href="/admin/content/new">
                 <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-sm sm:text-base">
                   <Plus className="w-4 h-4 mr-2" />
@@ -215,6 +242,16 @@ export default function AdminDashboard() {
               </h1>
             </div>
             <div className="flex items-center gap-1">
+              <Link href="/admin/feedback">
+                <Button size="icon" variant="ghost" className="text-purple-400 relative">
+                  <MessageSquarePlus className="w-5 h-5" />
+                  {unreadFeedback > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[8px] font-bold text-white">
+                      {unreadFeedback}
+                    </span>
+                  )}
+                </Button>
+              </Link>
               <Link href="/admin/content/new">
                 <Button size="icon" className="bg-purple-600 text-white hover:bg-purple-700">
                   <Plus className="w-4 h-4" />

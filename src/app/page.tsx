@@ -30,10 +30,17 @@ export default function Home() {
   const [contents, setContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(true)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalItems, setTotalItems] = useState(0)
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [activeFilter, searchQuery])
 
   useEffect(() => {
     fetchContents()
-  }, [activeFilter, searchQuery])
+  }, [activeFilter, searchQuery, currentPage])
 
   const fetchContents = async () => {
     setLoading(true)
@@ -41,11 +48,15 @@ export default function Home() {
       const params = new URLSearchParams()
       if (activeFilter !== 'all') params.append('type', activeFilter)
       if (searchQuery) params.append('search', searchQuery)
+      params.append('page', currentPage.toString())
+      params.append('limit', '24')
 
       const response = await fetch(`/api/content?${params}`)
       if (response.ok) {
         const data = await response.json()
-        setContents(data)
+        setContents(data.contents)
+        setTotalPages(data.totalPages)
+        setTotalItems(data.total)
       }
     } catch (error) {
       console.error('Failed to fetch contents:', error)
@@ -316,73 +327,139 @@ export default function Home() {
             <p className="text-gray-500">Try adjusting your search or filters</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
-            {contents.map((content) => (
-              <Link key={content.id} href={`/content/${content.id}`} className="w-full">
-                <Card className="group bg-gray-900/50 border-gray-800/50 overflow-hidden hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer h-full">
-                  <CardContent className="p-0 h-full flex flex-col">
-                    {/* Poster with Quality Badges Overlay */}
-                    <div className="relative aspect-[2/3] bg-gray-800 overflow-hidden flex-shrink-0">
-                      <div
-                        className="w-full h-full"
-                        dangerouslySetInnerHTML={{ __html: content.imageHtml }}
-                      />
-                      {/* Quality Badges - Top Left Overlay */}
-                      {content.quality && content.quality.length > 0 && (
-                        <div className="absolute top-2 left-2 flex flex-col gap-1">
-                          {content.quality.map((q) => (
-                            <Badge
-                              key={q}
-                              className={`${getQualityColor(q)} text-white text-xs font-semibold px-2 py-0.5`}
-                            >
-                              {q}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3 sm:gap-4">
+              {contents.map((content) => (
+                <Link key={content.id} href={`/content/${content.id}`} className="w-full">
+                  <Card className="group bg-gray-900/50 border-gray-800/50 overflow-hidden hover:border-purple-500/50 hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-300 cursor-pointer h-full">
+                    <CardContent className="p-0 h-full flex flex-col">
+                      {/* Poster with Quality Badges Overlay */}
+                      <div className="relative aspect-[2/3] bg-gray-800 overflow-hidden flex-shrink-0">
+                        <div
+                          className="w-full h-full"
+                          dangerouslySetInnerHTML={{ __html: content.imageHtml }}
+                        />
+                        {/* Quality Badges - Top Left Overlay */}
+                        {content.quality && content.quality.length > 0 && (
+                          <div className="absolute top-2 left-2 flex flex-col gap-1">
+                            {content.quality.map((q) => (
+                              <Badge
+                                key={q}
+                                className={`${getQualityColor(q)} text-white text-xs font-semibold px-2 py-0.5`}
+                              >
+                                {q}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
+                      </div>
 
-                    {/* Card Content */}
-                    <div className="p-3 sm:p-4 flex flex-col flex-1">
-                      {/* Title */}
-                      <h3 className="font-bold text-white text-sm sm:text-base mb-1 line-clamp-2 group-hover:text-purple-400 transition-colors">
-                        {content.mainTitle}
-                      </h3>
+                      {/* Card Content */}
+                      <div className="p-3 sm:p-4 flex flex-col flex-1">
+                        {/* Title */}
+                        <h3 className="font-bold text-white text-sm sm:text-base mb-1 line-clamp-2 group-hover:text-purple-400 transition-colors">
+                          {content.mainTitle}
+                        </h3>
 
-                      {/* Release Year */}
-                      {content.releaseYear && (
-                        <p className="text-xs sm:text-sm text-gray-400 mb-2">{content.releaseYear}</p>
-                      )}
+                        {/* Release Year */}
+                        {content.releaseYear && (
+                          <p className="text-xs sm:text-sm text-gray-400 mb-2">{content.releaseYear}</p>
+                        )}
 
-                      {/* Genre Tags */}
-                      {content.genre && content.genre.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mb-2">
-                          {content.genre.slice(0, 2).map((g) => (
-                            <Badge key={g} variant="secondary" className="text-xs bg-gray-800/50 text-gray-400 border-gray-700/50">
-                              {g}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
+                        {/* Genre Tags */}
+                        {content.genre && content.genre.length > 0 && (
+                          <div className="flex flex-wrap gap-1 mb-2">
+                            {content.genre.slice(0, 2).map((g) => (
+                              <Badge key={g} variant="secondary" className="text-xs bg-gray-800/50 text-gray-400 border-gray-700/50">
+                                {g}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
 
-                      {/* IMDb Rating */}
-                      {content.imdbRating && (
-                        <div className="flex items-center gap-1 text-yellow-500 mb-2 sm:mb-3">
-                          <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
-                          <span className="text-xs sm:text-sm font-semibold">{content.imdbRating}</span>
-                        </div>
-                      )}
+                        {/* IMDb Rating */}
+                        {content.imdbRating && (
+                          <div className="flex items-center gap-1 text-yellow-500 mb-2 sm:mb-3">
+                            <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
+                            <span className="text-xs sm:text-sm font-semibold">{content.imdbRating}</span>
+                          </div>
+                        )}
 
-                      {/* View Details Button - Always Visible */}
-                      <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold text-sm sm:text-base py-2 sm:py-2.5 mt-auto">
-                        View Details
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+                        {/* View Details Button - Always Visible */}
+                        <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold text-sm sm:text-base py-2 sm:py-2.5 mt-auto">
+                          View Details
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+
+            {/* Pagination UI */}
+            <div className="mt-12 flex flex-col items-center gap-6">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1 || loading}
+                  className="bg-gray-900/50 border-gray-800 text-gray-400 hover:text-white disabled:opacity-30 rounded-xl"
+                >
+                  <ChevronDown className="w-5 h-5 rotate-90" />
+                </Button>
+
+                <div className="flex items-center gap-1">
+                  {[...Array(totalPages)].map((_, i) => {
+                    const pageNum = i + 1
+                    if (
+                      totalPages <= 7 ||
+                      pageNum === 1 ||
+                      pageNum === totalPages ||
+                      (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                    ) {
+                      return (
+                        <Button
+                          key={pageNum}
+                          variant={currentPage === pageNum ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => setCurrentPage(pageNum)}
+                          disabled={loading}
+                          className={`w-10 h-10 rounded-xl font-bold transition-all duration-300 ${
+                            currentPage === pageNum
+                              ? 'bg-gradient-to-br from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/20'
+                              : 'bg-gray-900/50 border-gray-800 text-gray-400 hover:text-white hover:border-purple-500/50'
+                          }`}
+                        >
+                          {pageNum}
+                        </Button>
+                      )
+                    } else if (
+                      (pageNum === 2 && currentPage > 3) ||
+                      (pageNum === totalPages - 1 && currentPage < totalPages - 2)
+                    ) {
+                      return <span key={pageNum} className="text-gray-600 px-1">...</span>
+                    }
+                    return null
+                  })}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages || loading}
+                  className="bg-gray-900/50 border-gray-800 text-gray-400 hover:text-white disabled:opacity-30 rounded-xl"
+                >
+                  <ChevronDown className="w-5 h-5 -rotate-90" />
+                </Button>
+              </div>
+              
+              <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                Page {currentPage} of {totalPages} — {totalItems} {activeFilter === 'all' ? 'Items' : activeFilter + 's'} total
+              </p>
+            </div>
+          </>
         )}
       </main>
 

@@ -8,6 +8,9 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const type = searchParams.get('type')
     const search = searchParams.get('search')
+    const page = parseInt(searchParams.get('page') || '1')
+    const limit = parseInt(searchParams.get('limit') || '24')
+    const skip = (page - 1) * limit
 
     // Get all content from Firestore
     const contentCollection = collection(firestore, 'content')
@@ -46,7 +49,17 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    return NextResponse.json(contents)
+    const total = contents.length
+    const totalPages = Math.ceil(total / limit)
+    const paginatedContents = contents.slice(skip, skip + limit)
+
+    return NextResponse.json({
+      contents: paginatedContents,
+      total,
+      totalPages,
+      currentPage: page,
+      limit
+    })
   } catch (error) {
     console.error('Error fetching contents:', error)
     return NextResponse.json(

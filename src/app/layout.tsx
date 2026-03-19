@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Script from "next/script";
+import { FeedbackButton } from "@/components/FeedbackButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,9 @@ export const metadata: Metadata = {
     title: "CineVerse",
     description: "Cineverse – Your universe for movies, TV series, and anime downloads.",
   },
+  other: {
+    "monetag": "ef69de7ce8e8810689cda4643e780697",
+  },
 };
 
 export default function RootLayout({
@@ -43,7 +47,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        {/* ✅ Monetag Ads (all 4) */}
+        {/* ✅ New Ads (3) */}
         <Script
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -51,23 +55,19 @@ export default function RootLayout({
               // Only load ads if not on admin pages
               if (!window.location.pathname.startsWith('/admin')) {
                 (function(s){
-                  s.dataset.zone='9943154';
-                  s.src='https://forfrogadiertor.com/tag.min.js';
-                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-
-                (function(s){
-                  s.dataset.zone='9942840';
-                  s.src='https://gizokraijaw.net/vignette.min.js';
-                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
-
-                (function(s){
-                  s.dataset.zone='9942796';
+                  s.dataset.zone='10559283';
                   s.src='https://al5sm.com/tag.min.js';
                 })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
 
                 (function(s){
-                  s.dataset.zone='9938688';
-                  s.src='https://groleegni.net/vignette.min.js';
+                  s.src='https://3nbf4.com/act/files/tag.min.js?z=10559287';
+                  s.dataset.cfasync='false';
+                  s.async=true;
+                })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+
+                (function(s){
+                  s.dataset.zone='10559290';
+                  s.src='https://nap5k.com/tag.min.js';
                 })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
               }
             `,
@@ -75,6 +75,7 @@ export default function RootLayout({
         />
 
         {children}
+        <FeedbackButton />
         <Toaster />
       </body>
     </html>
