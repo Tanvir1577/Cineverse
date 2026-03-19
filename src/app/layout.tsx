@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     description: "Cineverse – Your universe for movies, TV series, and anime downloads.",
   },
   other: {
-    "monetag": "ef69de7ce8e8810689cda4643e780697",
-  },
+    "monetag": "ef69de7ce8e8810689cda4643e780697"
+  }
 };
 
 export default function RootLayout({
@@ -47,7 +47,23 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
       >
-        {/* ✅ New Ads (3) */}
+{/* Monetag verification meta tag */}
+        <Script
+          id="monetag-meta"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (!window.location.pathname.startsWith('/admin')) {
+                const metaTag = document.createElement('meta');
+                metaTag.name = 'monetag';
+                metaTag.content = 'ef69de7ce8e8810689cda4643e780697';
+                document.head.appendChild(metaTag);
+              }
+            `,
+          }}
+        />
+
+        {/* ✅ New Monetag Ads (3 ads) */}
         <Script
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -61,7 +77,7 @@ export default function RootLayout({
 
                 (function(s){
                   s.src='https://3nbf4.com/act/files/tag.min.js?z=10559287';
-                  s.dataset.cfasync='false';
+s.setAttribute('data-cfasync', 'false');
                   s.async=true;
                 })([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
 
