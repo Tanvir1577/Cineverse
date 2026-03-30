@@ -331,7 +331,7 @@ export default function ContentForm({ params }: { params?: { id?: string } }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-gray-300">Main Title (Displayed on cards) *</Label>
+                  <Label className="text-gray-300">Original/Main Title *</Label>
                   <Input
                     type="text"
                     placeholder="e.g., Inception"
@@ -343,7 +343,7 @@ export default function ContentForm({ params }: { params?: { id?: string } }) {
                 </div>
 
                 <div className="space-y-2">
-                  <Label className="text-gray-300">Secondary Title (Displayed in detail page)</Label>
+                  <Label className="text-gray-300">Display Title (Shown on cards & headings)</Label>
                   <Input
                     type="text"
                     placeholder="e.g., Inception (2010)"
