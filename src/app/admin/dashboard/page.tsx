@@ -47,6 +47,7 @@ interface Content {
   id: string
   contentType: string
   mainTitle: string
+  secondaryTitle: string
   releaseYear?: number
   genre?: string[]
   imdbRating?: number

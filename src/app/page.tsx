@@ -112,44 +112,40 @@ export default function Home() {
             <nav className="hidden lg:flex items-center gap-1 bg-gray-900/30 px-1 py-1 rounded-lg border border-gray-800/50">
               <button
                 onClick={() => setActiveFilter('all')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${
-                  activeFilter === 'all'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${activeFilter === 'all'
                     ? 'bg-purple-600 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                }`}
+                  }`}
               >
                 <Grid className="w-3.5 h-3.5" />
                 <span>All</span>
               </button>
               <button
                 onClick={() => setActiveFilter('Movie')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${
-                  activeFilter === 'Movie'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${activeFilter === 'Movie'
                     ? 'bg-purple-600 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                }`}
+                  }`}
               >
                 <Film className="w-3.5 h-3.5" />
                 <span>Movies</span>
               </button>
               <button
                 onClick={() => setActiveFilter('Series')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${
-                  activeFilter === 'Series'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${activeFilter === 'Series'
                     ? 'bg-purple-600 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                }`}
+                  }`}
               >
                 <Tv className="w-3.5 h-3.5" />
                 <span>Series</span>
               </button>
               <button
                 onClick={() => setActiveFilter('Anime')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${
-                  activeFilter === 'Anime'
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${activeFilter === 'Anime'
                     ? 'bg-purple-600 text-white'
                     : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
-                }`}
+                  }`}
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Anime</span>
@@ -186,44 +182,40 @@ export default function Home() {
                     <div className="flex flex-col gap-1">
                       <button
                         onClick={() => { setActiveFilter('all'); setMobileMenuOpen(false) }}
-                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${
-                          activeFilter === 'all'
+                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${activeFilter === 'all'
                             ? 'bg-purple-600 text-white'
                             : 'text-gray-400 hover:text-white bg-gray-800/30'
-                        }`}
+                          }`}
                       >
                         <Grid className="w-4 h-4" />
                         <span>All</span>
                       </button>
                       <button
                         onClick={() => { setActiveFilter('Movie'); setMobileMenuOpen(false) }}
-                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${
-                          activeFilter === 'Movie'
+                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${activeFilter === 'Movie'
                             ? 'bg-purple-600 text-white'
                             : 'text-gray-400 hover:text-white bg-gray-800/30'
-                        }`}
+                          }`}
                       >
                         <Film className="w-4 h-4" />
                         <span>Movies</span>
                       </button>
                       <button
                         onClick={() => { setActiveFilter('Series'); setMobileMenuOpen(false) }}
-                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${
-                          activeFilter === 'Series'
+                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${activeFilter === 'Series'
                             ? 'bg-purple-600 text-white'
                             : 'text-gray-400 hover:text-white bg-gray-800/30'
-                        }`}
+                          }`}
                       >
                         <Tv className="w-4 h-4" />
                         <span>Series</span>
                       </button>
                       <button
                         onClick={() => { setActiveFilter('Anime'); setMobileMenuOpen(false) }}
-                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${
-                          activeFilter === 'Anime'
+                        className={`flex items-center gap-2 px-3 py-2 rounded text-sm font-medium transition-all ${activeFilter === 'Anime'
                             ? 'bg-purple-600 text-white'
                             : 'text-gray-400 hover:text-white bg-gray-800/30'
-                        }`}
+                          }`}
                       >
                         <Sparkles className="w-4 h-4" />
                         <span>Anime</span>
@@ -251,44 +243,40 @@ export default function Home() {
           <nav className="flex lg:hidden items-center gap-1 mt-4 overflow-x-auto pb-2">
             <button
               onClick={() => setActiveFilter('all')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${
-                activeFilter === 'all'
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${activeFilter === 'all'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-400 hover:text-white bg-gray-800/30'
-              }`}
+                }`}
             >
               <Grid className="w-3.5 h-3.5" />
               <span>All</span>
             </button>
             <button
               onClick={() => setActiveFilter('Movie')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${
-                activeFilter === 'Movie'
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${activeFilter === 'Movie'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-400 hover:text-white bg-gray-800/30'
-              }`}
+                }`}
             >
               <Film className="w-3.5 h-3.5" />
               <span>Movies</span>
             </button>
             <button
               onClick={() => setActiveFilter('Series')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${
-                activeFilter === 'Series'
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${activeFilter === 'Series'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-400 hover:text-white bg-gray-800/30'
-              }`}
+                }`}
             >
               <Tv className="w-3.5 h-3.5" />
               <span>Series</span>
             </button>
             <button
               onClick={() => setActiveFilter('Anime')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${
-                activeFilter === 'Anime'
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 flex-shrink-0 ${activeFilter === 'Anime'
                   ? 'bg-purple-600 text-white'
                   : 'text-gray-400 hover:text-white bg-gray-800/30'
-              }`}
+                }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
               <span>Anime</span>
@@ -354,8 +342,8 @@ export default function Home() {
                       {/* Card Content */}
                       <div className="p-3 sm:p-4 flex flex-col flex-1">
                         {/* Title */}
-                        <h3 className="font-bold text-white text-sm sm:text-base mb-1 line-clamp-2 group-hover:text-purple-400 transition-colors">
-                          {content.mainTitle}
+                        <h3 className="font-bold text-white text-sm sm:text-base mb-2 group-hover:text-purple-400 transition-colors text-center tracking-tight leading-snug">
+                          {content.secondaryTitle || content.mainTitle}
                         </h3>
 
                         {/* Release Year */}
@@ -422,11 +410,10 @@ export default function Home() {
                           size="sm"
                           onClick={() => setCurrentPage(pageNum)}
                           disabled={loading}
-                          className={`w-10 h-10 rounded-xl font-bold transition-all duration-300 ${
-                            currentPage === pageNum
+                          className={`w-10 h-10 rounded-xl font-bold transition-all duration-300 ${currentPage === pageNum
                               ? 'bg-gradient-to-br from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/20'
                               : 'bg-gray-900/50 border-gray-800 text-gray-400 hover:text-white hover:border-purple-500/50'
-                          }`}
+                            }`}
                         >
                           {pageNum}
                         </Button>
@@ -451,7 +438,7 @@ export default function Home() {
                   <ChevronDown className="w-5 h-5 -rotate-90" />
                 </Button>
               </div>
-              
+
               <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">
                 Page {currentPage} of {totalPages}
               </p>
