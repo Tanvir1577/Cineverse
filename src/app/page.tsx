@@ -658,24 +658,24 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-cineverse-900 flex flex-col">
       {/* ========= HEADER ========= */}
-      <header className="sticky top-0 z-50 glass border-b border-white/[0.04]">
+      <header className="sticky top-0 z-50 bg-cineverse-900/95 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="container mx-auto px-4 py-3 sm:py-4">
           <div className="flex items-center justify-between gap-3 sm:gap-4">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2.5 group shrink-0">
-              <img src="/Cineverse.png" alt="Cineverse" className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl shadow-lg shadow-purple-500/25 group-hover:shadow-purple-500/40 transition-all duration-300 group-hover:scale-105 object-cover" />
-              <h1 className="text-xl sm:text-2xl font-black text-gradient tracking-tight hidden sm:block">
+            <a href="/" className="flex items-center gap-2 group shrink-0">
+              <img src="/Cineverse.png" alt="Cineverse" className="w-8 h-8 sm:w-10 sm:h-10 transition-all duration-300 group-hover:scale-105 object-contain" />
+              <h1 className="text-lg sm:text-2xl font-black text-gradient tracking-tight">
                 CINEVERSE
               </h1>
             </a>
 
             {/* Search Bar */}
-            <div className="flex-1 max-w-xl">
+            <div className="flex-1 max-w-xl min-w-0">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
                   type="text"
-                  placeholder="Search movies, series, anime..."
+                  placeholder="Search..."
                   value={searchInput}
                   onChange={(e) => handleSearch(e.target.value)}
                   className="pl-10 bg-cineverse-800/80 border-white/[0.06] text-white placeholder:text-muted-foreground focus:border-purple-500/50 focus:ring-purple-500/20 h-9 sm:h-10 text-sm rounded-xl"
@@ -733,7 +733,7 @@ export default function HomePage() {
               backgroundImage: 'linear-gradient(rgba(139,92,246,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.3) 1px, transparent 1px)',
               backgroundSize: '60px 60px'
             }} />
-            <div className="container mx-auto px-4 py-16 sm:py-24 lg:py-32 relative z-10">
+            <div className="container mx-auto px-4 py-10 sm:py-24 lg:py-32 relative z-10">
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -744,11 +744,11 @@ export default function HomePage() {
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.2, duration: 0.5 }}
-                  className="inline-flex items-center gap-2 bg-purple-600/10 border border-purple-500/20 rounded-full px-5 py-2 mb-8 backdrop-blur-sm"
+                  className="inline-flex items-center gap-1.5 sm:gap-2 bg-purple-600/10 border border-purple-500/20 rounded-full px-3 sm:px-5 py-1.5 sm:py-2 mb-6 sm:mb-8 backdrop-blur-sm"
                 >
-                  <Crown className="w-3.5 h-3.5 text-amber-400" />
-                  <span className="text-xs font-bold text-purple-300 uppercase tracking-widest">Premium Entertainment Hub</span>
-                  <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                  <Crown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400" />
+                  <span className="text-[10px] sm:text-xs font-bold text-purple-300 uppercase tracking-widest">Premium Entertainment Hub</span>
+                  <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-purple-400" />
                 </motion.div>
                 <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white mb-6 leading-[1.1]">
                   Discover Your Next
@@ -757,7 +757,7 @@ export default function HomePage() {
                   <span className="text-white"> Watch</span>
                 </h2>
                 <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-                  Explore <span className="text-white font-bold">{total}+</span> movies, series, and anime in stunning quality. Download with ease and enjoy anywhere.
+                  Explore movies, series, and anime in stunning quality. Download with ease and enjoy anywhere.
                 </p>
 
                 {/* Stats Row */}
@@ -887,7 +887,7 @@ export default function HomePage() {
             {/* Brand */}
             <div className="sm:col-span-2 lg:col-span-1">
               <div className="flex items-center gap-3 mb-4">
-                <img src="/Cineverse.png" alt="Cineverse" className="w-10 h-10 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
+                <img src="/Cineverse.png" alt="Cineverse" className="w-10 h-10 object-contain" />
                 <span className="text-xl font-black text-gradient tracking-tight">CINEVERSE</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">

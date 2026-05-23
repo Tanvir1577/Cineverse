@@ -152,7 +152,7 @@ export default function AdminLoginPage() {
         <motion.img
           src="/Cineverse.png"
           alt="Cineverse"
-          className="w-14 h-14 rounded-2xl shadow-lg shadow-purple-500/30 object-cover"
+          className="w-14 h-14 object-contain"
           whileHover={{ scale: 1.05, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
         />

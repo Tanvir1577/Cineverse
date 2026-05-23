@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from '@/components/ui/sheet'
 import {
   ArrowLeft, Search, Film, Tv, LayoutDashboard, Plus, LogOut,
   Menu, Pencil, Trash2, Loader2, Star, Sparkles, TrendingUp, Clapperboard,
@@ -133,7 +133,7 @@ export default function AdminDashboardPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0f]">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-white/[0.06]">
+      <header className="sticky top-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="text-white/40 hover:text-white/70 transition-colors flex items-center gap-1.5">
@@ -142,7 +142,7 @@ export default function AdminDashboardPage() {
             </Link>
             <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
             <div className="flex items-center gap-2.5">
-              <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
+              <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 object-contain" />
               <span className="text-lg font-bold text-gradient">Cineverse</span>
               <span className="text-[10px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-2 py-0.5 rounded-full hidden sm:inline">Admin</span>
             </div>
@@ -200,8 +200,9 @@ export default function AdminDashboardPage() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-[#12121a] border-white/[0.06] p-6">
+                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                 <div className="flex items-center gap-2.5 mb-6 mt-2">
-                  <img src="/Cineverse.png" alt="Cineverse" className="h-8 w-8 rounded-lg shadow-lg shadow-purple-500/20 object-cover" />
+                  <img src="/Cineverse.png" alt="Cineverse" className="h-8 w-8 object-contain" />
                   <span className="text-base font-bold text-gradient">Cineverse</span>
                   <span className="text-[9px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-1.5 py-0.5 rounded-full">Admin</span>
                 </div>
@@ -452,7 +453,7 @@ export default function AdminDashboardPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2.5">
-              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg shadow-md shadow-purple-500/15 object-cover" />
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 object-contain" />
               <span className="text-sm font-bold tracking-wide text-white/60">CINEVERSE</span>
             </div>
             <p className="text-xs text-white/20">

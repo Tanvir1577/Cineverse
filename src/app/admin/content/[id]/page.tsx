@@ -234,7 +234,7 @@ export default function EditContentPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0f]">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-white/[0.06]">
+      <header className="sticky top-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
@@ -244,7 +244,7 @@ export default function EditContentPage() {
               </Link>
               <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
               <div className="flex items-center gap-2.5">
-                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
+                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 object-contain" />
                 <span className="text-lg font-bold text-gradient">Cineverse</span>
                 <span className="text-[10px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-2 py-0.5 rounded-full hidden sm:inline">Admin</span>
               </div>
@@ -737,7 +737,7 @@ export default function EditContentPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg object-cover" />
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 object-contain" />
               <span className="text-xs font-bold tracking-wider text-gradient">CINEVERSE</span>
             </div>
             <p className="text-xs text-white/20">&copy; {new Date().getFullYear()} Cineverse. All rights reserved.</p>

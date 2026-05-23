@@ -316,7 +316,7 @@ export default function AdminFeedbackPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0f]">
       {/* Header */}
-      <header className="sticky top-0 z-50 glass border-b border-white/[0.06]">
+      <header className="sticky top-0 z-50 bg-[#0a0a0f]/95 backdrop-blur-xl border-b border-white/[0.06]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
@@ -326,7 +326,7 @@ export default function AdminFeedbackPage() {
               </Link>
               <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
               <div className="flex items-center gap-2.5">
-                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
+                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 object-contain" />
                 <div className="flex items-center gap-2">
                   <span className="text-lg font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent leading-tight">Cineverse</span>
                   <div className="w-px h-4 bg-white/[0.08] hidden sm:block" />
@@ -480,7 +480,7 @@ export default function AdminFeedbackPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
-              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg shadow-md shadow-purple-500/20 object-cover" />
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 object-contain" />
               <span className="text-sm font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent tracking-wider">CINEVERSE</span>
             </div>
             <p className="text-xs text-white/20">© {new Date().getFullYear()} Cineverse. All rights reserved.</p>
