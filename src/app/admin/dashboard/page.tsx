@@ -3,13 +3,18 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
-import { Play, ArrowLeft, Search, Users, Film, Tv, LayoutDashboard, Plus, LogOut, Menu, Pencil, Trash2, Loader2, Star } from 'lucide-react'
+import {
+  Play, ArrowLeft, Search, Users, Film, Tv, LayoutDashboard, Plus, LogOut,
+  Menu, Pencil, Trash2, Loader2, Star, Sparkles, TrendingUp, Clapperboard,
+  Swords, Activity, ChevronRight
+} from 'lucide-react'
 import { toast } from 'sonner'
 
 interface Content {
@@ -18,8 +23,51 @@ interface Content {
 }
 
 const qColor = (q: string) => q === '480p' ? 'bg-amber-500/90 text-white' : q === '720p' ? 'bg-yellow-500/90 text-white' : q === '1080p' ? 'bg-emerald-500/90 text-white' : 'bg-purple-500/90 text-white'
-const tColor = (t: string) => t === 'Movie' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : t === 'Series' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30' : 'bg-orange-500/20 text-orange-400 border-orange-500/30'
-const tIcon = (t: string) => t === 'Movie' ? '🎬' : t === 'Series' ? '📺' : '⚔️'
+const tColor = (t: string) => t === 'Movie' ? 'bg-blue-500/15 text-blue-400 border-blue-500/30' : t === 'Series' ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30' : 'bg-orange-500/15 text-orange-400 border-orange-500/30'
+
+// Stat card config
+const statCards = [
+  { key: 'total', label: 'Total Content', icon: Sparkles, gradient: 'from-purple-600 to-purple-400', bgGlow: 'rgba(139,92,246,0.15)', iconBg: 'bg-purple-500/20', iconColor: 'text-purple-400' },
+  { key: 'movies', label: 'Movies', icon: Film, gradient: 'from-blue-600 to-blue-400', bgGlow: 'rgba(59,130,246,0.15)', iconBg: 'bg-blue-500/20', iconColor: 'text-blue-400' },
+  { key: 'series', label: 'Series', icon: Tv, gradient: 'from-emerald-600 to-emerald-400', bgGlow: 'rgba(16,185,129,0.15)', iconBg: 'bg-emerald-500/20', iconColor: 'text-emerald-400' },
+  { key: 'anime', label: 'Anime', icon: Swords, gradient: 'from-orange-600 to-orange-400', bgGlow: 'rgba(249,115,22,0.15)', iconBg: 'bg-orange-500/20', iconColor: 'text-orange-400' },
+] as const
+
+// Content type icon
+function TypeIcon({ type }: { type: string }) {
+  if (type === 'Movie') return <Film className="h-4 w-4 text-blue-400" />
+  if (type === 'Series') return <Tv className="h-4 w-4 text-emerald-400" />
+  return <Swords className="h-4 w-4 text-orange-400" />
+}
+
+// Animated counter
+function AnimatedNumber({ value }: { value: number }) {
+  return (
+    <motion.span
+      className="text-3xl sm:text-4xl font-bold text-white tabular-nums"
+      key={value}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {value}
+    </motion.span>
+  )
+}
+
+// Container animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 }
+  }
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } }
+}
 
 export default function AdminDashboardPage() {
   const router = useRouter()
@@ -66,40 +114,111 @@ export default function AdminDashboardPage() {
     return c.mainTitle?.toLowerCase().includes(q) || c.contentType?.toLowerCase().includes(q) || c.genre?.some(g => g.toLowerCase().includes(q)) || c.releaseYear?.toString().includes(q)
   })
 
-  if (!authChecked) return <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]"><Loader2 className="h-8 w-8 text-purple-500 animate-spin" /></div>
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#0a0a0f]">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative">
+            <div className="h-12 w-12 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+            <div className="absolute inset-0 h-12 w-12 border-2 border-cyan-500/30 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+          </div>
+          <p className="text-white/30 text-sm">Authenticating...</p>
+        </div>
+      </div>
+    )
+  }
 
   const stats = { total: contents.length, movies: contents.filter(c => c.contentType === 'Movie').length, series: contents.filter(c => c.contentType === 'Series').length, anime: contents.filter(c => c.contentType === 'Anime').length }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#0a0a0f]">
+      {/* Header */}
       <header className="sticky top-0 z-50 glass border-b border-white/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="text-white/60 hover:text-white transition-colors flex items-center gap-1.5"><ArrowLeft className="h-4 w-4" /><span className="text-sm hidden sm:inline">Home</span></Link>
-            <div className="w-px h-6 bg-white/10 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center"><Play className="h-4 w-4 text-white fill-white" /></div>
+            <Link href="/" className="text-white/40 hover:text-white/70 transition-colors flex items-center gap-1.5">
+              <ArrowLeft className="h-4 w-4" />
+              <span className="text-sm hidden sm:inline">Home</span>
+            </Link>
+            <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
+            <div className="flex items-center gap-2.5">
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                <Play className="h-4.5 w-4.5 text-white fill-white" />
+              </div>
               <span className="text-lg font-bold text-gradient">Cineverse</span>
-              <span className="text-xs text-white/40 hidden sm:inline">Admin</span>
+              <span className="text-[10px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-2 py-0.5 rounded-full hidden sm:inline">Admin</span>
             </div>
           </div>
+
           <nav className="hidden md:flex items-center gap-1">
-            <Link href="/admin/dashboard"><Button variant="ghost" className="gap-2 text-purple-400 bg-purple-600/10 border border-purple-500/30 text-sm"><LayoutDashboard className="h-4 w-4" />Dashboard</Button></Link>
-            <Link href="/admin/categories"><Button variant="ghost" className="gap-2 text-white/60 hover:text-white text-sm"><LayoutDashboard className="h-4 w-4" />Categories</Button></Link>
-            <Link href="/admin/feedback"><Button variant="ghost" className="gap-2 text-white/60 hover:text-white text-sm"><Star className="h-4 w-4" />Feedback</Button></Link>
+            {[
+              { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard', active: true, color: 'purple' },
+              { href: '/admin/categories', icon: Star, label: 'Categories', active: false, color: 'cyan' },
+              { href: '/admin/feedback', icon: Activity, label: 'Feedback', active: false, color: 'amber' },
+            ].map(nav => (
+              <Link key={nav.href} href={nav.href}>
+                <Button
+                  variant="ghost"
+                  className={`gap-2 text-sm transition-all duration-200 ${
+                    nav.active
+                      ? `text-${nav.color}-400 bg-${nav.color}-600/10 border border-${nav.color}-500/25`
+                      : 'text-white/40 hover:text-white/70 hover:bg-white/[0.04]'
+                  }`}
+                >
+                  <nav.icon className="h-4 w-4" />
+                  {nav.label}
+                </Button>
+              </Link>
+            ))}
           </nav>
+
           <div className="flex items-center gap-2">
-            <Link href="/admin/content/new"><Button className="bg-gradient-to-r from-purple-600 to-purple-500 text-white gap-2 text-sm shadow-lg shadow-purple-500/20"><Plus className="h-4 w-4" /><span className="hidden sm:inline">Add Content</span></Button></Link>
-            <Button variant="ghost" onClick={handleLogout} className="text-red-400 hover:text-red-300 hover:bg-red-500/10 gap-2 text-sm"><LogOut className="h-4 w-4" /><span className="hidden sm:inline">Logout</span></Button>
+            <Link href="/admin/content/new">
+              <Button className="bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white gap-2 text-sm shadow-lg shadow-purple-500/20 transition-all duration-300 hover:shadow-purple-500/30 rounded-xl">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline">Add Content</span>
+              </Button>
+            </Link>
+            <Button
+              variant="ghost"
+              onClick={handleLogout}
+              className="text-white/30 hover:text-red-400 hover:bg-red-500/10 gap-2 text-sm transition-colors duration-200 rounded-xl"
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
             <Sheet open={navOpen} onOpenChange={setNavOpen}>
-              <SheetTrigger asChild><Button variant="ghost" size="icon" className="md:hidden text-white/70"><Menu className="h-5 w-5" /></Button></SheetTrigger>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden text-white/50 hover:text-white rounded-xl">
+                  <Menu className="h-5 w-5" />
+                </Button>
+              </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-[#12121a] border-white/[0.06] p-6">
                 <div className="flex flex-col gap-2 mt-6">
-                  <Link href="/admin/dashboard" onClick={() => setNavOpen(false)}><Button variant="ghost" className="w-full justify-start gap-2 text-white/80">Dashboard</Button></Link>
-                  <Link href="/admin/categories" onClick={() => setNavOpen(false)}><Button variant="ghost" className="w-full justify-start gap-2 text-white/80">Categories</Button></Link>
-                  <Link href="/admin/feedback" onClick={() => setNavOpen(false)}><Button variant="ghost" className="w-full justify-start gap-2 text-white/80">Feedback</Button></Link>
-                  <Link href="/admin/content/new" onClick={() => setNavOpen(false)}><Button className="w-full bg-purple-600 text-white gap-2 mt-4"><Plus className="h-4 w-4" />Add Content</Button></Link>
-                  <Button variant="ghost" onClick={handleLogout} className="w-full justify-start text-red-400 gap-2 mt-2"><LogOut className="h-4 w-4" />Logout</Button>
+                  <Link href="/admin/dashboard" onClick={() => setNavOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/[0.04]">
+                      <LayoutDashboard className="h-4 w-4" />Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/admin/categories" onClick={() => setNavOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/[0.04]">
+                      <Star className="h-4 w-4" />Categories
+                    </Button>
+                  </Link>
+                  <Link href="/admin/feedback" onClick={() => setNavOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/[0.04]">
+                      <Activity className="h-4 w-4" />Feedback
+                    </Button>
+                  </Link>
+                  <div className="h-px bg-white/[0.06] my-2" />
+                  <Link href="/admin/content/new" onClick={() => setNavOpen(false)}>
+                    <Button className="w-full bg-purple-600 hover:bg-purple-500 text-white gap-2">
+                      <Plus className="h-4 w-4" />Add Content
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" onClick={handleLogout} className="w-full justify-start text-red-400/70 hover:text-red-400 hover:bg-red-500/10 gap-2 mt-2">
+                    <LogOut className="h-4 w-4" />Logout
+                  </Button>
                 </div>
               </SheetContent>
             </Sheet>
@@ -107,68 +226,219 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
+      {/* Main */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-white mb-6">Dashboard</h1>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-          {[
-            { l: 'Total', v: stats.total, c: 'purple' },
-            { l: 'Movies', v: stats.movies, c: 'blue' },
-            { l: 'Series', v: stats.series, c: 'emerald' },
-            { l: 'Anime', v: stats.anime, c: 'orange' },
-          ].map(s => (
-            <Card key={s.l} className="bg-[#12121a] border-white/[0.06]">
-              <CardContent className="p-4 sm:p-6">
-                <div className="text-2xl sm:text-3xl font-bold text-white">{s.v}</div>
-                <div className="text-xs sm:text-sm text-white/40 mt-1">{s.l}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="mb-4 relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/30" />
-          <Input placeholder="Search content..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="pl-9 bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-10 max-w-md" />
-        </div>
-
-        {loading ? <div className="py-16 text-center"><Loader2 className="h-8 w-8 text-purple-400 animate-spin mx-auto mb-4" /><p className="text-white/40 text-sm">Loading...</p></div> :
-        filtered.length === 0 ? <div className="py-16 text-center"><p className="text-white/40 text-sm">{searchQuery ? 'No matches' : 'No content'}</p></div> :
-        <div className="space-y-2 max-h-[600px] overflow-y-auto">
-          {filtered.map(c => (
-            <div key={c.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-[#12121a] border border-white/[0.04] rounded-lg hover:border-purple-500/20 transition-colors">
-              <div className="flex items-center gap-3 flex-1 min-w-0">
-                <span className="text-lg">{tIcon(c.contentType)}</span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-white font-medium text-sm truncate">{c.mainTitle}</p>
-                  {c.secondaryTitle && <p className="text-white/30 text-xs truncate">{c.secondaryTitle}</p>}
-                </div>
-              </div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge variant="outline" className={`text-[10px] ${tColor(c.contentType)}`}>{c.contentType}</Badge>
-                {c.releaseYear && <span className="text-white/40 text-xs">{c.releaseYear}</span>}
-                {c.imdbRating && <span className="text-amber-400 text-xs">⭐ {c.imdbRating}</span>}
-                {(Array.isArray(c.quality) ? c.quality : []).map(q => <span key={q} className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${qColor(q)}`}>{q}</span>)}
-              </div>
-              <div className="flex items-center gap-1">
-                <Link href={`/admin/content/${c.id}`}><Button variant="ghost" size="sm" className="h-7 text-xs text-purple-400 hover:text-purple-300 gap-1 px-2"><Pencil className="h-3 w-3" />Edit</Button></Link>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild><Button variant="ghost" size="sm" className="h-7 text-xs text-red-400 hover:text-red-300 gap-1 px-2" disabled={deletingId === c.id}>{deletingId === c.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}Del</Button></AlertDialogTrigger>
-                  <AlertDialogContent className="bg-[#12121a] border-white/[0.08]">
-                    <AlertDialogHeader><AlertDialogTitle className="text-white">Delete &quot;{c.mainTitle}&quot;?</AlertDialogTitle><AlertDialogDescription className="text-white/50">This cannot be undone.</AlertDialogDescription></AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel className="bg-white/5 text-white/70 border-white/10">Cancel</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-red-600 text-white hover:bg-red-500">Delete</AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
+        {/* Title Section */}
+        <motion.div
+          className="mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex items-center gap-3 mb-2">
+            <div className="h-10 w-10 rounded-xl bg-purple-500/15 flex items-center justify-center">
+              <TrendingUp className="h-5 w-5 text-purple-400" />
             </div>
-          ))}
-        </div>}
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-white">Dashboard</h1>
+              <p className="text-white/30 text-sm">Overview of your content library</p>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Stats Cards */}
+        <motion.div
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {statCards.map((card) => {
+            const value = stats[card.key]
+            const Icon = card.icon
+            return (
+              <motion.div key={card.key} variants={itemVariants}>
+                <Card className="bg-[#12121a] border-white/[0.06] overflow-hidden relative group hover:border-white/[0.1] transition-all duration-300">
+                  {/* Background glow */}
+                  <div
+                    className="absolute top-0 right-0 w-24 h-24 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: card.bgGlow }}
+                  />
+                  <CardContent className="p-4 sm:p-6 relative z-10">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className={`h-10 w-10 rounded-xl ${card.iconBg} flex items-center justify-center`}>
+                        <Icon className={`h-5 w-5 ${card.iconColor}`} />
+                      </div>
+                      <ChevronRight className="h-4 w-4 text-white/10 group-hover:text-white/20 transition-colors" />
+                    </div>
+                    <AnimatedNumber value={value} />
+                    <p className="text-xs text-white/35 mt-1 font-medium">{card.label}</p>
+                  </CardContent>
+                  {/* Bottom accent */}
+                  <div className={`h-[2px] bg-gradient-to-r ${card.gradient} opacity-0 group-hover:opacity-60 transition-opacity duration-500`} />
+                </Card>
+              </motion.div>
+            )
+          })}
+        </motion.div>
+
+        {/* Search */}
+        <motion.div
+          className="mb-6"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div className="relative group max-w-md">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-purple-400/60 transition-colors" />
+            <Input
+              placeholder="Search content by title, genre, year..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="pl-10 bg-[#1a1a25]/50 border-white/[0.06] text-white placeholder:text-white/20 h-11 rounded-xl focus-visible:border-purple-500/30 focus-visible:ring-purple-500/10 transition-all duration-300"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition-colors text-sm"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </motion.div>
+
+        {/* Content List */}
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="loading"
+              className="py-20 text-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="relative inline-flex">
+                <div className="h-10 w-10 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                <div className="absolute inset-0 h-10 w-10 border-2 border-cyan-500/30 border-b-transparent rounded-full animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+              </div>
+              <p className="text-white/30 text-sm mt-4">Loading content library...</p>
+            </motion.div>
+          ) : filtered.length === 0 ? (
+            <motion.div
+              key="empty"
+              className="py-20 text-center"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div className="h-20 w-20 rounded-2xl bg-white/[0.03] flex items-center justify-center mx-auto mb-4">
+                <Film className="h-10 w-10 text-white/10" />
+              </div>
+              <p className="text-white/40 text-sm font-medium">
+                {searchQuery ? 'No content matches your search' : 'No content yet'}
+              </p>
+              <p className="text-white/20 text-xs mt-1">
+                {searchQuery ? 'Try a different search term' : 'Start by adding your first content'}
+              </p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="list"
+              className="space-y-2 max-h-[650px] overflow-y-auto pr-1"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {filtered.map((c, i) => (
+                <motion.div
+                  key={c.id}
+                  variants={itemVariants}
+                  className="group"
+                >
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-[#12121a]/60 border border-white/[0.04] rounded-xl hover:border-purple-500/20 hover:bg-[#12121a]/80 transition-all duration-300 relative overflow-hidden">
+                    {/* Hover glow */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                    <div className="flex items-center gap-3 flex-1 min-w-0 relative z-10">
+                      <div className="h-9 w-9 rounded-lg bg-[#1a1a25] flex items-center justify-center shrink-0 border border-white/[0.04]">
+                        <TypeIcon type={c.contentType} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-white font-medium text-sm truncate group-hover:text-white/90">{c.mainTitle}</p>
+                        {c.secondaryTitle && <p className="text-white/25 text-xs truncate">{c.secondaryTitle}</p>}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 flex-wrap relative z-10">
+                      <Badge variant="outline" className={`text-[10px] ${tColor(c.contentType)}`}>{c.contentType}</Badge>
+                      {c.releaseYear && <span className="text-white/30 text-xs">{c.releaseYear}</span>}
+                      {c.imdbRating && (
+                        <span className="flex items-center gap-0.5 text-amber-400 text-xs">
+                          <Star className="h-3 w-3 fill-amber-400" />{c.imdbRating}
+                        </span>
+                      )}
+                      {(Array.isArray(c.quality) ? c.quality : []).map(q => (
+                        <span key={q} className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${qColor(q)}`}>{q}</span>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center gap-1 relative z-10">
+                      <Link href={`/admin/content/${c.id}`}>
+                        <Button variant="ghost" size="sm" className="h-8 text-xs text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 gap-1 px-2.5 rounded-lg transition-colors">
+                          <Pencil className="h-3 w-3" />Edit
+                        </Button>
+                      </Link>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 text-xs text-white/25 hover:text-red-400 hover:bg-red-500/10 gap-1 px-2.5 rounded-lg transition-colors"
+                            disabled={deletingId === c.id}
+                          >
+                            {deletingId === c.id ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
+                            Del
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-[#12121a] border-white/[0.08]">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-white">Delete &quot;{c.mainTitle}&quot;?</AlertDialogTitle>
+                            <AlertDialogDescription className="text-white/40">This action cannot be undone. The content will be permanently removed.</AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-white/[0.04] text-white/60 border-white/[0.08] hover:bg-white/[0.08]">Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => handleDelete(c.id)} className="bg-red-600 text-white hover:bg-red-500">Delete</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Results count */}
+        {!loading && filtered.length > 0 && (
+          <motion.div
+            className="mt-4 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <p className="text-white/20 text-xs">
+              Showing {filtered.length} of {contents.length} items
+              {searchQuery && ` matching "${searchQuery}"`}
+            </p>
+          </motion.div>
+        )}
       </main>
 
+      {/* Footer */}
       <footer className="mt-auto border-t border-white/[0.04] py-4 bg-[#0a0a0f]">
-        <p className="text-center text-xs text-white/20">&copy; {new Date().getFullYear()} Cineverse</p>
+        <p className="text-center text-xs text-white/15">&copy; {new Date().getFullYear()} Cineverse Admin</p>
       </footer>
     </div>
   )

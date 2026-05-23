@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     const now = new Date()
-    const expiresAt = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString()
+    const expiresAt = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString()
     const createdAt = now.toISOString()
 
     const feedbackData = {
