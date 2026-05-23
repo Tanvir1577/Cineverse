@@ -239,7 +239,7 @@ function ContentDetailModal({ content, open, onClose }: { content: Content | nul
                         <Tag className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
                         <span className="text-muted-foreground shrink-0">Genre:</span>
                         <div className="flex flex-wrap gap-1">
-                          {content.genre.map(g => (
+                          {(Array.isArray(content.genre) ? content.genre : []).map(g => (
                             <Badge key={g} variant="secondary" className="text-[11px] bg-cineverse-700 text-gray-300 border-white/[0.04] h-5">
                               {g}
                             </Badge>
@@ -254,7 +254,7 @@ function ContentDetailModal({ content, open, onClose }: { content: Content | nul
                         <Globe className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                         <span className="text-muted-foreground shrink-0">Language:</span>
                         <div className="flex flex-wrap gap-1">
-                          {content.language.map(l => (
+                          {(Array.isArray(content.language) ? content.language : []).map(l => (
                             <Badge key={l} variant="secondary" className="text-[11px] bg-cineverse-700 text-gray-300 border-white/[0.04] h-5">
                               {l}
                             </Badge>
@@ -269,7 +269,7 @@ function ContentDetailModal({ content, open, onClose }: { content: Content | nul
                         <Subtitles className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
                         <span className="text-muted-foreground shrink-0">Subtitle:</span>
                         <div className="flex flex-wrap gap-1">
-                          {content.subtitle.map(s => (
+                          {(Array.isArray(content.subtitle) ? content.subtitle : []).map(s => (
                             <Badge key={s} variant="secondary" className="text-[11px] bg-cineverse-700 text-gray-300 border-white/[0.04] h-5">
                               {s}
                             </Badge>
@@ -284,7 +284,7 @@ function ContentDetailModal({ content, open, onClose }: { content: Content | nul
                         <Sparkles className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                         <span className="text-muted-foreground shrink-0">Quality:</span>
                         <div className="flex flex-wrap gap-1.5">
-                          {content.quality.map(q => (
+                          {(Array.isArray(content.quality) ? content.quality : []).map(q => (
                             <QualityBadge key={q} quality={q} />
                           ))}
                         </div>
@@ -369,7 +369,7 @@ function ContentDetailModal({ content, open, onClose }: { content: Content | nul
                                 <span className="text-sm font-medium text-gray-300">{link.title}</span>
                               </div>
                               <div className="flex items-center gap-2 flex-shrink-0">
-                                {link.quality && link.quality.map((q: string) => (
+                                {link.quality && (Array.isArray(link.quality) ? link.quality : [link.quality]).map((q: string) => (
                                   <QualityBadge key={q} quality={q} size="xs" />
                                 ))}
                                 <a

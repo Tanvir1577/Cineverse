@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
 
+// Normalize Firestore data: ensure array fields are always arrays
+function normalizeContent(data: Record<string, unknown>) {
+  const arrayFields = ['genre', 'language', 'subtitle', 'quality']
+  for (const field of arrayFields) {
+    if (!Array.isArray(data[field])) {
+      data[field] = data[field] ? [data[field]] : []
+    }
+  }
+  // Normalize downloadGroups.links.quality too
+  if (Array.isArray(data.downloadGroups)) {
+    data.downloadGroups = data.downloadGroups.map((group: any) => ({
+      ...group,
+      links: Array.isArray(group.links) ? group.links.map((link: any) => ({
+        ...link,
+        quality: Array.isArray(link.quality) ? link.quality : link.quality ? [link.quality] : []
+      })) : []
+    }))
+  }
+  return data
+}
+
 // GET single content by ID
 export async function GET(
   request: NextRequest,
@@ -18,10 +39,10 @@ export async function GET(
       )
     }
 
-    const content = {
+    const content = normalizeContent({
       id: docSnap.id,
       ...docSnap.data()
-    }
+    })
 
     return NextResponse.json(content)
   } catch (error) {

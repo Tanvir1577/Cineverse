@@ -1,6 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { adminDb } from '@/lib/firebase-admin'
 
+// Normalize Firestore data: ensure array fields are always arrays
+function normalizeContent(data: Record<string, unknown>) {
+  const arrayFields = ['genre', 'language', 'subtitle', 'quality']
+  for (const field of arrayFields) {
+    if (!Array.isArray(data[field])) {
+      data[field] = data[field] ? [data[field]] : []
+    }
+  }
+  if (Array.isArray(data.downloadGroups)) {
+    data.downloadGroups = data.downloadGroups.map((group: any) => ({
+      ...group,
+      links: Array.isArray(group.links) ? group.links.map((link: any) => ({
+        ...link,
+        quality: Array.isArray(link.quality) ? link.quality : link.quality ? [link.quality] : []
+      })) : []
+    }))
+  }
+  return data
+}
+
 // GET all content with optional filtering and search
 export async function GET(request: NextRequest) {
   try {
@@ -15,10 +35,10 @@ export async function GET(request: NextRequest) {
     let contents: any[] = []
     
     snapshot.forEach((doc) => {
-      contents.push({
+      contents.push(normalizeContent({
         id: doc.id,
         ...doc.data()
-      })
+      }))
     })
 
     // Filter by content type if specified

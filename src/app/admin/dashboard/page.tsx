@@ -147,7 +147,7 @@ export default function AdminDashboardPage() {
                 <Badge variant="outline" className={`text-[10px] ${tColor(c.contentType)}`}>{c.contentType}</Badge>
                 {c.releaseYear && <span className="text-white/40 text-xs">{c.releaseYear}</span>}
                 {c.imdbRating && <span className="text-amber-400 text-xs">⭐ {c.imdbRating}</span>}
-                {c.quality?.map(q => <span key={q} className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${qColor(q)}`}>{q}</span>)}
+                {(Array.isArray(c.quality) ? c.quality : []).map(q => <span key={q} className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${qColor(q)}`}>{q}</span>)}
               </div>
               <div className="flex items-center gap-1">
                 <Link href={`/admin/content/${c.id}`}><Button variant="ghost" size="sm" className="h-7 text-xs text-purple-400 hover:text-purple-300 gap-1 px-2"><Pencil className="h-3 w-3" />Edit</Button></Link>
