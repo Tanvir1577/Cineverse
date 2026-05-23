@@ -207,9 +207,7 @@ export default function CreateContentPage() {
               </Link>
               <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
               <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                  <Play className="h-4 w-4 text-white fill-white" />
-                </div>
+                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
                 <span className="text-lg font-bold text-gradient">Cineverse</span>
                 <span className="text-[10px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-2 py-0.5 rounded-full hidden sm:inline">Admin</span>
               </div>
@@ -535,18 +533,12 @@ export default function CreateContentPage() {
             <Card className="bg-[#12121a]/80 border-white/[0.06] overflow-hidden relative group">
               <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
                   <CardTitle className="text-white text-lg flex items-center gap-2.5">
                     <div className="h-8 w-8 rounded-lg bg-purple-500/15 flex items-center justify-center">
                       <Download className="h-4 w-4 text-purple-400" />
                     </div>
                     Download Section
                   </CardTitle>
-                  <Button type="button" onClick={addDownloadGroup} className="bg-purple-500/15 text-purple-400 hover:bg-purple-500/25 hover:text-purple-300 border border-purple-500/20 gap-1.5 text-sm rounded-xl transition-all duration-200" size="sm">
-                    <Plus className="h-4 w-4" />
-                    Add Download Group
-                  </Button>
-                </div>
               </CardHeader>
               <CardContent>
                 {downloadGroups.length === 0 ? (
@@ -657,6 +649,13 @@ export default function CreateContentPage() {
                     </AnimatePresence>
                   </div>
                 )}
+                {/* Add Download Group Button - at the bottom */}
+                <div className="mt-4 pt-4 border-t border-white/[0.06]">
+                  <Button type="button" onClick={addDownloadGroup} className="w-full bg-purple-500/15 text-purple-400 hover:bg-purple-500/25 hover:text-purple-300 border border-purple-500/20 gap-1.5 text-sm rounded-xl transition-all duration-200 h-11">
+                    <Plus className="h-4 w-4" />
+                    Add Download Group
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </FormCard>
@@ -688,13 +687,14 @@ export default function CreateContentPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-white/[0.04] py-4 bg-[#0a0a0f]">
+      <footer className="mt-auto border-t border-white/[0.04] py-5 bg-[#0a0a0f]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-2">
-            <div className="h-4 w-4 rounded bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center">
-              <Play className="h-2 w-2 text-white fill-white" />
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg object-cover" />
+              <span className="text-xs font-bold tracking-wider text-gradient">CINEVERSE</span>
             </div>
-            <span className="text-xs text-white/15">Cineverse Admin</span>
+            <p className="text-xs text-white/20">&copy; {new Date().getFullYear()} Cineverse. All rights reserved.</p>
           </div>
         </div>
       </footer>

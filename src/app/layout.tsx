@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   description: "Discover and download movies, TV series, and anime in stunning quality. Cineverse offers a premium collection with powerful search and easy navigation.",
   keywords: ["Cineverse", "movies", "series", "anime", "download", "streaming", "IMDB"],
   icons: {
-    icon: "/logo.svg",
+    icon: "/Cineverse.png",
   },
 };
 

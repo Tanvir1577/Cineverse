@@ -21,7 +21,6 @@ import {
   Activity,
   Inbox,
   Eye,
-  Bell,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -327,12 +326,11 @@ export default function AdminFeedbackPage() {
               </Link>
               <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
               <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-cyan-600 to-purple-500 flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                  <Bell className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-white leading-tight">Feedback Center</h1>
-                  <p className="text-[10px] text-white/25 uppercase tracking-wider">Manage user feedback</p>
+                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent leading-tight">Cineverse</span>
+                  <div className="w-px h-4 bg-white/[0.08] hidden sm:block" />
+                  <span className="text-sm text-white/40 font-medium hidden sm:inline">Feedback Center</span>
                 </div>
               </div>
             </div>
@@ -478,9 +476,15 @@ export default function AdminFeedbackPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-white/[0.04] py-4 bg-[#0a0a0f]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-xs text-white/15">Cineverse Admin · Feedback Center</span>
+      <footer className="mt-auto border-t border-white/[0.04] bg-[#0a0a0f]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg shadow-md shadow-purple-500/20 object-cover" />
+              <span className="text-sm font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent tracking-wider">CINEVERSE</span>
+            </div>
+            <p className="text-xs text-white/20">© {new Date().getFullYear()} Cineverse. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>

@@ -149,14 +149,13 @@ export default function AdminLoginPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
       >
-        <motion.div
-          className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-600 via-purple-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/30 relative"
+        <motion.img
+          src="/Cineverse.png"
+          alt="Cineverse"
+          className="w-14 h-14 rounded-2xl shadow-lg shadow-purple-500/30 object-cover"
           whileHover={{ scale: 1.05, rotate: 5 }}
           whileTap={{ scale: 0.95 }}
-        >
-          <Play className="h-7 w-7 text-white fill-white" />
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-purple-600 to-cyan-500 opacity-50 blur-xl -z-10" />
-        </motion.div>
+        />
         <div>
           <h1 className="text-3xl font-bold text-gradient">Cineverse</h1>
           <p className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-medium">Admin Portal</p>

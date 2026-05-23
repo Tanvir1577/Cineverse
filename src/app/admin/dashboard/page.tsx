@@ -11,7 +11,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import {
-  Play, ArrowLeft, Search, Users, Film, Tv, LayoutDashboard, Plus, LogOut,
+  ArrowLeft, Search, Film, Tv, LayoutDashboard, Plus, LogOut,
   Menu, Pencil, Trash2, Loader2, Star, Sparkles, TrendingUp, Clapperboard,
   Swords, Activity, ChevronRight
 } from 'lucide-react'
@@ -142,34 +142,40 @@ export default function AdminDashboardPage() {
             </Link>
             <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-purple-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <Play className="h-4.5 w-4.5 text-white fill-white" />
-              </div>
+              <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
               <span className="text-lg font-bold text-gradient">Cineverse</span>
               <span className="text-[10px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-2 py-0.5 rounded-full hidden sm:inline">Admin</span>
             </div>
           </div>
 
           <nav className="hidden md:flex items-center gap-1">
-            {[
-              { href: '/admin/dashboard', icon: LayoutDashboard, label: 'Dashboard', active: true, color: 'purple' },
-              { href: '/admin/categories', icon: Star, label: 'Categories', active: false, color: 'cyan' },
-              { href: '/admin/feedback', icon: Activity, label: 'Feedback', active: false, color: 'amber' },
-            ].map(nav => (
-              <Link key={nav.href} href={nav.href}>
-                <Button
-                  variant="ghost"
-                  className={`gap-2 text-sm transition-all duration-200 ${
-                    nav.active
-                      ? `text-${nav.color}-400 bg-${nav.color}-600/10 border border-${nav.color}-500/25`
-                      : 'text-white/40 hover:text-white/70 hover:bg-white/[0.04]'
-                  }`}
-                >
-                  <nav.icon className="h-4 w-4" />
-                  {nav.label}
-                </Button>
-              </Link>
-            ))}
+            <Link href="/admin/dashboard">
+              <Button
+                variant="ghost"
+                className="gap-2 text-sm text-purple-400 bg-purple-600/10 border border-purple-500/25 transition-all duration-200 rounded-lg"
+              >
+                <LayoutDashboard className="h-4 w-4" />
+                Dashboard
+              </Button>
+            </Link>
+            <Link href="/admin/categories">
+              <Button
+                variant="ghost"
+                className="gap-2 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.04] transition-all duration-200 rounded-lg"
+              >
+                <Star className="h-4 w-4" />
+                Categories
+              </Button>
+            </Link>
+            <Link href="/admin/feedback">
+              <Button
+                variant="ghost"
+                className="gap-2 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.04] transition-all duration-200 rounded-lg"
+              >
+                <Activity className="h-4 w-4" />
+                Feedback
+              </Button>
+            </Link>
           </nav>
 
           <div className="flex items-center gap-2">
@@ -194,29 +200,34 @@ export default function AdminDashboardPage() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="right" className="w-72 bg-[#12121a] border-white/[0.06] p-6">
-                <div className="flex flex-col gap-2 mt-6">
+                <div className="flex items-center gap-2.5 mb-6 mt-2">
+                  <img src="/Cineverse.png" alt="Cineverse" className="h-8 w-8 rounded-lg shadow-lg shadow-purple-500/20 object-cover" />
+                  <span className="text-base font-bold text-gradient">Cineverse</span>
+                  <span className="text-[9px] uppercase tracking-wider text-white/25 font-medium bg-white/[0.04] px-1.5 py-0.5 rounded-full">Admin</span>
+                </div>
+                <div className="flex flex-col gap-1">
                   <Link href="/admin/dashboard" onClick={() => setNavOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/[0.04]">
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-purple-400 bg-purple-500/10 hover:bg-purple-500/15 rounded-lg">
                       <LayoutDashboard className="h-4 w-4" />Dashboard
                     </Button>
                   </Link>
                   <Link href="/admin/categories" onClick={() => setNavOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/[0.04]">
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/50 hover:text-white/80 hover:bg-white/[0.04] rounded-lg">
                       <Star className="h-4 w-4" />Categories
                     </Button>
                   </Link>
                   <Link href="/admin/feedback" onClick={() => setNavOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/70 hover:text-white hover:bg-white/[0.04]">
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/50 hover:text-white/80 hover:bg-white/[0.04] rounded-lg">
                       <Activity className="h-4 w-4" />Feedback
                     </Button>
                   </Link>
-                  <div className="h-px bg-white/[0.06] my-2" />
+                  <div className="h-px bg-white/[0.06] my-3" />
                   <Link href="/admin/content/new" onClick={() => setNavOpen(false)}>
-                    <Button className="w-full bg-purple-600 hover:bg-purple-500 text-white gap-2">
+                    <Button className="w-full bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 text-white gap-2 shadow-lg shadow-purple-500/20 rounded-lg">
                       <Plus className="h-4 w-4" />Add Content
                     </Button>
                   </Link>
-                  <Button variant="ghost" onClick={handleLogout} className="w-full justify-start text-red-400/70 hover:text-red-400 hover:bg-red-500/10 gap-2 mt-2">
+                  <Button variant="ghost" onClick={handleLogout} className="w-full justify-start text-red-400/60 hover:text-red-400 hover:bg-red-500/10 gap-2 mt-2 rounded-lg">
                     <LogOut className="h-4 w-4" />Logout
                   </Button>
                 </div>
@@ -437,8 +448,18 @@ export default function AdminDashboardPage() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-white/[0.04] py-4 bg-[#0a0a0f]">
-        <p className="text-center text-xs text-white/15">&copy; {new Date().getFullYear()} Cineverse Admin</p>
+      <footer className="mt-auto border-t border-white/[0.06] bg-[#0a0a0f]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2.5">
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg shadow-md shadow-purple-500/15 object-cover" />
+              <span className="text-sm font-bold tracking-wide text-white/60">CINEVERSE</span>
+            </div>
+            <p className="text-xs text-white/20">
+              &copy; {new Date().getFullYear()} Cineverse. All rights reserved.
+            </p>
+          </div>
+        </div>
       </footer>
     </div>
   )

@@ -287,12 +287,11 @@ export default function AdminCategoriesPage() {
               </Link>
               <div className="w-px h-6 bg-white/[0.06] hidden sm:block" />
               <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-500 to-purple-500 flex items-center justify-center shadow-lg shadow-amber-500/20">
-                  <FolderOpen className="h-4 w-4 text-white" />
-                </div>
-                <div>
-                  <h1 className="text-lg font-bold text-white leading-tight">Categories</h1>
-                  <p className="text-[10px] text-white/25 uppercase tracking-wider">Manage collections</p>
+                <img src="/Cineverse.png" alt="Cineverse" className="h-9 w-9 rounded-xl shadow-lg shadow-purple-500/20 object-cover" />
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-bold text-white">Cineverse</span>
+                  <div className="w-px h-4 bg-white/[0.1]" />
+                  <span className="text-sm text-white/50 font-medium">Categories</span>
                 </div>
               </div>
             </div>
@@ -672,9 +671,15 @@ export default function AdminCategoriesPage() {
       </Dialog>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-white/[0.04] py-4 bg-[#0a0a0f]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-xs text-white/15">Cineverse Admin · Categories</span>
+      <footer className="mt-auto border-t border-white/[0.04] bg-[#0a0a0f]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5">
+              <img src="/Cineverse.png" alt="Cineverse" className="h-7 w-7 rounded-lg shadow-md shadow-purple-500/20 object-cover" />
+              <span className="text-sm font-bold text-white/40 tracking-wider">CINEVERSE</span>
+            </div>
+            <p className="text-xs text-white/20">© {new Date().getFullYear()} Cineverse. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
