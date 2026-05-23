@@ -1,17 +1,14 @@
 import { NextResponse } from 'next/server'
-import { serverDb } from '@/lib/firebase-server'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { adminDb } from '@/lib/firebase-admin'
 
 export async function GET() {
   try {
-    const feedbackCollection = collection(serverDb, 'feedback')
-    const q = query(feedbackCollection, where('isRead', '==', false))
-    const querySnapshot = await getDocs(q)
+    const snapshot = await adminDb.collection('feedback').where('isRead', '==', false).get()
     
     const now = new Date()
     let count = 0
 
-    querySnapshot.forEach((document) => {
+    snapshot.forEach((document) => {
       const data = document.data()
       const expiresAt = new Date(data.expiresAt)
 

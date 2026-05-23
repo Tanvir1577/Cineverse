@@ -4,9 +4,9 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Play, Film, Tv, Sword, Star, Calendar, Globe, Subtitles,
-  HardDrive, FileCode, Download, ChevronDown, X, ArrowUp,
-  MessageSquarePlus, AlertTriangle, ExternalLink, Loader2,
-  Sparkles, TrendingUp, Filter, Heart, ChevronRight, Send,
+  HardDrive, FileCode, Download, X, ArrowUp,
+  MessageSquarePlus, AlertTriangle, Loader2,
+  Sparkles, TrendingUp, Send,
   FolderOpen, Tag
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -22,10 +22,10 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from 'sonner'
 import {
-  QUALITY_COLORS, QUALITY_BORDER_COLORS, GENRE_OPTIONS, LANGUAGE_OPTIONS, SUBTITLE_OPTIONS, QUALITY_OPTIONS,
+  QUALITY_COLORS,
   type Content, type ContentType, type Category, type DownloadGroup
 } from '@/lib/types'
 
@@ -444,8 +444,10 @@ function ReportForm({ contentId, contentTitle, onClose }: { contentId: string; c
       setMessage('')
       setLink('')
       onClose()
+      toast.success('Report submitted successfully!')
     } catch (error) {
       console.error('Failed to submit report:', error)
+      toast.error('Failed to submit report. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -506,8 +508,10 @@ function RequestForm({ onClose }: { onClose: () => void }) {
       setContentType('')
       setMessage('')
       onClose()
+      toast.success('Request submitted successfully!')
     } catch (error) {
       console.error('Failed to submit request:', error)
+      toast.error('Failed to submit request. Please try again.')
     } finally {
       setLoading(false)
     }

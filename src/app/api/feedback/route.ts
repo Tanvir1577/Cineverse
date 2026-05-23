@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serverDb } from '@/lib/firebase-server'
-import { collection, getDocs, addDoc, query, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { adminDb } from '@/lib/firebase-admin'
 
 export async function POST(request: Request) {
   try {
@@ -29,7 +28,7 @@ export async function POST(request: Request) {
       expiresAt,
     }
 
-    const docRef = await addDoc(collection(serverDb, 'feedback'), feedbackData)
+    const docRef = await adminDb.collection('feedback').add(feedbackData)
 
     return NextResponse.json({ id: docRef.id, ...feedbackData }, { status: 201 })
   } catch (error) {
@@ -43,15 +42,13 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
-    const feedbackCollection = collection(serverDb, 'feedback')
-    const q = query(feedbackCollection, orderBy('createdAt', 'desc'))
-    const querySnapshot = await getDocs(q)
+    const snapshot = await adminDb.collection('feedback').orderBy('createdAt', 'desc').get()
     
     const now = new Date()
     const feedback: any[] = []
     const expiredIds: string[] = []
 
-    querySnapshot.forEach((document) => {
+    snapshot.forEach((document) => {
       const data = document.data()
       const expiresAt = new Date(data.expiresAt)
 
@@ -67,7 +64,7 @@ export async function GET() {
 
     // Cleanup expired feedback asynchronously
     if (expiredIds.length > 0) {
-      Promise.all(expiredIds.map(id => deleteDoc(doc(serverDb, 'feedback', id))))
+      Promise.all(expiredIds.map(id => adminDb.collection('feedback').doc(id).delete()))
         .catch(err => console.error('Failed to cleanup expired feedback:', err))
     }
 

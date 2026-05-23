@@ -320,16 +320,6 @@ export default function CreateContentPage() {
                   <Label className="text-white/70 text-sm">Season</Label>
                   <Input value={season} onChange={(e) => setSeason(e.target.value)} placeholder="e.g., Season 1, Season 2" className={inputCls} />
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">IMDB Rating</Label>
-                    <Input type="number" step="0.1" min="0" max="10" value={imdbRating} onChange={(e) => setImdbRating(e.target.value)} placeholder="e.g., 8.5" className={inputCls} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">Release Year</Label>
-                    <Input type="number" min="1900" max="2030" value={releaseYear} onChange={(e) => setReleaseYear(e.target.value)} placeholder="e.g., 2024" className={inputCls} />
-                  </div>
-                </div>
               </CardContent>
             </Card>
           )}
@@ -343,6 +333,18 @@ export default function CreateContentPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
+              {/* IMDB Rating & Release Year */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-white/70 text-sm">IMDB Rating</Label>
+                  <Input type="number" step="0.1" min="0" max="10" value={imdbRating} onChange={(e) => setImdbRating(e.target.value)} placeholder="e.g., 8.5" className={inputCls} />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white/70 text-sm">Release Year</Label>
+                  <Input type="number" min="1900" max="2030" value={releaseYear} onChange={(e) => setReleaseYear(e.target.value)} placeholder="e.g., 2024" className={inputCls} />
+                </div>
+              </div>
+
               {/* Genre */}
               <div className="space-y-2">
                 <Label className="text-white/70 text-sm">Genre</Label>

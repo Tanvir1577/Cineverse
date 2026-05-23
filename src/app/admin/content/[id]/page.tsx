@@ -338,7 +338,7 @@ export default function EditContentPage() {
             </CardContent>
           </Card>
 
-          {/* Series Information - Conditional */}
+          {/* Series Information - Only for Series/Anime */}
           {showSeriesInfo && (
             <Card className="bg-[#12121a] border-white/[0.06] animate-in fade-in duration-300">
               <CardHeader className="pb-4">
@@ -358,145 +358,155 @@ export default function EditContentPage() {
                   />
                 </div>
 
-                {contentType !== 'Movie' && (
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">Season</Label>
-                    <Input
-                      value={season}
-                      onChange={(e) => setSeason(e.target.value)}
-                      placeholder="e.g., Season 1, Season 2"
-                      className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
-                    />
-                  </div>
-                )}
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">IMDB Rating</Label>
-                    <Input
-                      type="number" step="0.1" min="0" max="10"
-                      value={imdbRating}
-                      onChange={(e) => setImdbRating(e.target.value)}
-                      placeholder="e.g., 8.5"
-                      className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">Release Year</Label>
-                    <Input
-                      type="number" min="1900" max="2030"
-                      value={releaseYear}
-                      onChange={(e) => setReleaseYear(e.target.value)}
-                      placeholder="e.g., 2024"
-                      className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
-                    />
-                  </div>
-                </div>
-
-                {/* Genre badges */}
                 <div className="space-y-2">
-                  <Label className="text-white/70 text-sm">Genre</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {GENRE_OPTIONS.map((g) => (
-                      <button
-                        key={g} type="button"
-                        onClick={() => setGenre(toggleArrayItem(genre, g))}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-150 border ${
-                          genre.includes(g)
-                            ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
-                            : 'bg-[#1a1a25] text-white/40 border-white/[0.06] hover:text-white/60'
-                        }`}
-                      >
-                        {g}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Language badges */}
-                <div className="space-y-2">
-                  <Label className="text-white/70 text-sm">Language</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {LANGUAGE_OPTIONS.map((l) => (
-                      <button
-                        key={l} type="button"
-                        onClick={() => setLanguage(toggleArrayItem(language, l))}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-150 border ${
-                          language.includes(l)
-                            ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
-                            : 'bg-[#1a1a25] text-white/40 border-white/[0.06] hover:text-white/60'
-                        }`}
-                      >
-                        {l}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Subtitle badges */}
-                <div className="space-y-2">
-                  <Label className="text-white/70 text-sm">Subtitle</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {SUBTITLE_OPTIONS.map((s) => (
-                      <button
-                        key={s} type="button"
-                        onClick={() => setSubtitle(toggleArrayItem(subtitle, s))}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors duration-150 border ${
-                          subtitle.includes(s)
-                            ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                            : 'bg-[#1a1a25] text-white/40 border-white/[0.06] hover:text-white/60'
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Quality badges */}
-                <div className="space-y-2">
-                  <Label className="text-white/70 text-sm">Quality</Label>
-                  <div className="flex flex-wrap gap-2">
-                    {QUALITY_OPTIONS.map((q) => (
-                      <button
-                        key={q} type="button"
-                        onClick={() => setQuality(toggleArrayItem(quality, q))}
-                        className={`px-3 py-1.5 rounded-full text-xs font-bold transition-colors duration-150 border uppercase ${
-                          quality.includes(q)
-                            ? qualityColorMap[q]
-                            : `bg-[#1a1a25] ${qualityBorderMap[q]} border hover:opacity-80`
-                        }`}
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* File Size & Format */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">File Size</Label>
-                    <Input
-                      value={fileSize}
-                      onChange={(e) => setFileSize(e.target.value)}
-                      placeholder="e.g., 2.5 GB"
-                      className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label className="text-white/70 text-sm">Format</Label>
-                    <Input
-                      value={format}
-                      onChange={(e) => setFormat(e.target.value)}
-                      placeholder="e.g., MKV, MP4"
-                      className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
-                    />
-                  </div>
+                  <Label className="text-white/70 text-sm">Season</Label>
+                  <Input
+                    value={season}
+                    onChange={(e) => setSeason(e.target.value)}
+                    placeholder="e.g., Season 1, Season 2"
+                    className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
+                  />
                 </div>
               </CardContent>
             </Card>
           )}
+
+          {/* Details - Available for ALL content types */}
+          <Card className="bg-[#12121a] border-white/[0.06] animate-in fade-in duration-300">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-white text-lg flex items-center gap-2">
+                <Film className="h-5 w-5 text-cyan-400" />
+                Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* IMDB Rating & Release Year */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-white/70 text-sm">IMDB Rating</Label>
+                  <Input
+                    type="number" step="0.1" min="0" max="10"
+                    value={imdbRating}
+                    onChange={(e) => setImdbRating(e.target.value)}
+                    placeholder="e.g., 8.5"
+                    className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white/70 text-sm">Release Year</Label>
+                  <Input
+                    type="number" min="1900" max="2030"
+                    value={releaseYear}
+                    onChange={(e) => setReleaseYear(e.target.value)}
+                    placeholder="e.g., 2024"
+                    className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
+                  />
+                </div>
+              </div>
+
+              {/* Genre badges */}
+              <div className="space-y-2">
+                <Label className="text-white/70 text-sm">Genre</Label>
+                <div className="flex flex-wrap gap-2">
+                  {GENRE_OPTIONS.map((g) => (
+                    <button
+                      key={g} type="button"
+                      onClick={() => setGenre(toggleArrayItem(genre, g))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                        genre.includes(g)
+                          ? 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                          : 'bg-[#1a1a25] text-white/40 border-white/[0.06] hover:text-white/60 hover:border-white/[0.12]'
+                      }`}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Language badges */}
+              <div className="space-y-2">
+                <Label className="text-white/70 text-sm">Language</Label>
+                <div className="flex flex-wrap gap-2">
+                  {LANGUAGE_OPTIONS.map((l) => (
+                    <button
+                      key={l} type="button"
+                      onClick={() => setLanguage(toggleArrayItem(language, l))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                        language.includes(l)
+                          ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                          : 'bg-[#1a1a25] text-white/40 border-white/[0.06] hover:text-white/60 hover:border-white/[0.12]'
+                      }`}
+                    >
+                      {l}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Subtitle badges */}
+              <div className="space-y-2">
+                <Label className="text-white/70 text-sm">Subtitle</Label>
+                <div className="flex flex-wrap gap-2">
+                  {SUBTITLE_OPTIONS.map((s) => (
+                    <button
+                      key={s} type="button"
+                      onClick={() => setSubtitle(toggleArrayItem(subtitle, s))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all duration-200 border ${
+                        subtitle.includes(s)
+                          ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                          : 'bg-[#1a1a25] text-white/40 border-white/[0.06] hover:text-white/60 hover:border-white/[0.12]'
+                      }`}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quality badges */}
+              <div className="space-y-2">
+                <Label className="text-white/70 text-sm">Quality</Label>
+                <div className="flex flex-wrap gap-2">
+                  {QUALITY_OPTIONS.map((q) => (
+                    <button
+                      key={q} type="button"
+                      onClick={() => setQuality(toggleArrayItem(quality, q))}
+                      className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-200 border uppercase ${
+                        quality.includes(q)
+                          ? qualityColorMap[q]
+                          : `bg-[#1a1a25] ${qualityBorderMap[q]} border hover:opacity-80`
+                      }`}
+                    >
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* File Size & Format */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-white/70 text-sm">File Size</Label>
+                  <Input
+                    value={fileSize}
+                    onChange={(e) => setFileSize(e.target.value)}
+                    placeholder="e.g., 2.5 GB"
+                    className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-white/70 text-sm">Format</Label>
+                  <Input
+                    value={format}
+                    onChange={(e) => setFormat(e.target.value)}
+                    placeholder="e.g., MKV, MP4"
+                    className="bg-[#1a1a25] border-white/[0.08] text-white placeholder:text-white/30 h-11 focus:border-purple-500/50 focus:ring-purple-500/20"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Storyline */}
           <Card className="bg-[#12121a] border-white/[0.06] animate-in fade-in duration-300">

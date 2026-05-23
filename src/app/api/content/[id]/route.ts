@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serverDb } from '@/lib/firebase-server'
-import { doc, getDoc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { adminDb } from '@/lib/firebase-admin'
 
 // GET single content by ID
 export async function GET(
@@ -9,10 +8,10 @@ export async function GET(
 ) {
   const { id } = await params
   try {
-    const docRef = doc(serverDb, 'content', id)
-    const docSnap = await getDoc(docRef)
+    const docRef = adminDb.collection('content').doc(id)
+    const docSnap = await docRef.get()
 
-    if (!docSnap.exists()) {
+    if (!docSnap.exists) {
       return NextResponse.json(
         { error: 'Content not found' },
         { status: 404 }
@@ -69,7 +68,7 @@ export async function PUT(
       )
     }
 
-    const docRef = doc(serverDb, 'content', id)
+    const docRef = adminDb.collection('content').doc(id)
     
     const updateData = {
       contentType,
@@ -91,7 +90,7 @@ export async function PUT(
       updatedAt: new Date().toISOString(),
     }
 
-    await updateDoc(docRef, updateData)
+    await docRef.update(updateData)
 
     const updatedContent = {
       id,
@@ -115,8 +114,8 @@ export async function DELETE(
 ) {
   const { id } = await params
   try {
-    const docRef = doc(serverDb, 'content', id)
-    await deleteDoc(docRef)
+    const docRef = adminDb.collection('content').doc(id)
+    await docRef.delete()
 
     return NextResponse.json({ success: true })
   } catch (error) {

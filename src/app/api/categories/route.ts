@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serverDb } from '@/lib/firebase-server'
-import { collection, getDocs, addDoc, query, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore'
+import { adminDb } from '@/lib/firebase-admin'
 
 // GET all categories
 export async function GET() {
   try {
-    const catSnapshot = await getDocs(query(collection(serverDb, 'categories'), orderBy('createdAt', 'desc')))
+    const catSnapshot = await adminDb.collection('categories').orderBy('createdAt', 'desc').get()
     
     const categories: any[] = []
     catSnapshot.forEach((document) => {
@@ -50,7 +49,7 @@ export async function POST(request: NextRequest) {
       updatedAt: timestamp,
     }
 
-    const docRef = await addDoc(collection(serverDb, 'categories'), catData)
+    const docRef = await adminDb.collection('categories').add(catData)
 
     return NextResponse.json({ id: docRef.id, ...catData }, { status: 201 })
   } catch (error) {

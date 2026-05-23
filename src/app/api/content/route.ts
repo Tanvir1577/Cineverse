@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { serverDb } from '@/lib/firebase-server'
-import { collection, getDocs, addDoc, query, orderBy, doc, updateDoc, deleteDoc, getDoc } from 'firebase/firestore'
+import { adminDb } from '@/lib/firebase-admin'
 
 // GET all content with optional filtering and search
 export async function GET(request: NextRequest) {
@@ -12,13 +11,10 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '24')
     const skip = (page - 1) * limit
 
-    const contentCollection = collection(serverDb, 'content')
-    let q = query(contentCollection, orderBy('createdAt', 'desc'))
-    
-    const querySnapshot = await getDocs(q)
+    const snapshot = await adminDb.collection('content').orderBy('createdAt', 'desc').get()
     let contents: any[] = []
     
-    querySnapshot.forEach((doc) => {
+    snapshot.forEach((doc) => {
       contents.push({
         id: doc.id,
         ...doc.data()
@@ -122,7 +118,7 @@ export async function POST(request: NextRequest) {
       updatedAt: timestamp,
     }
 
-    const docRef = await addDoc(collection(serverDb, 'content'), contentData)
+    const docRef = await adminDb.collection('content').add(contentData)
     
     const createdContent = {
       id: docRef.id,
