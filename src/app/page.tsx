@@ -558,8 +558,56 @@ function RequestForm({ onClose }: { onClose: () => void }) {
 }
 
 // ========= Category Section =========
-function CategorySection({ category, contents, onContentClick }: { category: Category; contents: Content[]; onContentClick: (c: Content) => void }) {
-  const categoryContents = contents.filter(c => category.contentIds?.includes(c.id))
+function CategorySection({ category, onContentClick }: { category: Category; onContentClick: (c: Content) => void }) {
+  const [categoryContents, setCategoryContents] = useState<Content[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    if (!category.contentIds || category.contentIds.length === 0) {
+      setCategoryContents([])
+      setLoading(false)
+      return
+    }
+    // Fetch each content item by ID
+    const fetchContent = async () => {
+      try {
+        setLoading(true)
+        const results = await Promise.all(
+          category.contentIds!.map(async (id) => {
+            try {
+              const res = await fetch(`/api/content/${id}`)
+              if (res.ok) return await res.json()
+              return null
+            } catch { return null }
+          })
+        )
+        setCategoryContents(results.filter(Boolean))
+      } catch { setCategoryContents([]) }
+      finally { setLoading(false) }
+    }
+    fetchContent()
+  }, [category.contentIds])
+
+  if (category.contentIds && category.contentIds.length > 0 && loading) {
+    return (
+      <section className="mb-14">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-1.5 h-7 bg-gradient-to-b from-purple-500 via-violet-500 to-cyan-500 rounded-full" />
+          <h2 className="text-xl sm:text-2xl font-black text-white">{category.name}</h2>
+          <div className="ml-auto"><Loader2 className="w-4 h-4 text-purple-400 animate-spin" /></div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {Array.from({ length: category.contentIds.length }).map((_, i) => (
+            <div key={i} className="space-y-2">
+              <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
+              <Skeleton className="h-3 w-3/4 bg-cineverse-800" />
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
   if (categoryContents.length === 0) return null
 
   return (
@@ -613,7 +661,7 @@ export default function HomePage() {
       if (search) params.set('search', search)
       if (type && type !== 'all') params.set('type', type)
       params.set('page', (pageNum || page).toString())
-      params.set('limit', '24')
+      params.set('limit', '20')
       const response = await fetch(`/api/content?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
@@ -800,7 +848,7 @@ export default function HomePage() {
         {!searchQuery && activeTab === 'all' && activeCategories.length > 0 && (
           <section className="container mx-auto px-4">
             {activeCategories.map(cat => (
-              <CategorySection key={cat.id} category={cat} contents={contents} onContentClick={openDetail} />
+              <CategorySection key={cat.id} category={cat} onContentClick={openDetail} />
             ))}
           </section>
         )}

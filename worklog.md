@@ -38,3 +38,23 @@ Stage Summary:
 - Category dialog no longer glitches when selecting content
 - Report button inside content detail works
 - Feedback badge shows unread count in admin dashboard
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix desktop grid, fix categories not showing on frontend, remove skills folder, remove z.ai references
+
+Work Log:
+- Fixed desktop grid layout to 4 columns × 5 rows (20 items per page, limit changed from 24 to 20)
+- Mobile stays 1 column, sm:2, md:3, lg:4
+- Fixed categories not showing on frontend: CategorySection was filtering paginated contents (only 20 items) by category.contentIds. Since those 20 items rarely included the category items, categories appeared empty. Fixed by making CategorySection fetch content by ID directly from API.
+- Removed /skills folder (53 skill directories)
+- Removed skills reference from eslint.config.mjs
+- Verified no z.ai/glm/zlm references exist in user-facing code
+- All CRUD operations verified working: Content CREATE/READ/UPDATE/DELETE, Category CREATE/READ/UPDATE/DELETE, Feedback CREATE/READ/MARK-READ/DELETE
+
+Stage Summary:
+- Grid: 4 cols × 5 rows on desktop, responsive on all devices
+- Categories now fetch content by ID and display properly on frontend
+- Skills folder removed, no third-party name references in UI
+- All admin functions fully working
