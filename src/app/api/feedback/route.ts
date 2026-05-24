@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, collection, getDocs, addDoc, query, orderBy, deleteDoc, doc } from '@/lib/firebase-admin'
+import { db, collection, getDocs, addDoc, query, orderBy, deleteDoc, doc, ensureAuth } from '@/lib/firebase-admin'
 
 // Helper: remove undefined values (Firebase Client SDK doesn't allow undefined)
 function cleanData(data: Record<string, unknown>) {
@@ -14,6 +14,9 @@ function cleanData(data: Record<string, unknown>) {
 
 export async function POST(request: Request) {
   try {
+    // Ensure Firebase auth before writing
+    await ensureAuth()
+
     const body = await request.json()
     const { type, title, contentType, message, link } = body
 

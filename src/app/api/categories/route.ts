@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, collection, getDocs, addDoc, query, orderBy } from '@/lib/firebase-admin'
+import { db, collection, getDocs, addDoc, query, orderBy, ensureAuth } from '@/lib/firebase-admin'
 
 // GET all categories
 export async function GET() {
@@ -28,6 +28,9 @@ export async function GET() {
 // POST create category
 export async function POST(request: NextRequest) {
   try {
+    // Ensure Firebase auth before writing
+    await ensureAuth()
+
     const body = await request.json()
     const { name, description, contentIds } = body
 

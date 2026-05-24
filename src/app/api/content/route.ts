@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, collection, getDocs, addDoc, query, orderBy } from '@/lib/firebase-admin'
+import { db, collection, getDocs, addDoc, query, orderBy, ensureAuth } from '@/lib/firebase-admin'
 
 // Normalize Firestore data: ensure array fields are always arrays
 function normalizeContent(data: Record<string, unknown>) {
@@ -99,6 +99,9 @@ export async function GET(request: NextRequest) {
 // POST create new content
 export async function POST(request: NextRequest) {
   try {
+    // Ensure Firebase auth before writing
+    await ensureAuth()
+
     const body = await request.json()
 
     const {

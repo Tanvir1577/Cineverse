@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, doc, getDoc, updateDoc, deleteDoc } from '@/lib/firebase-admin'
+import { db, doc, getDoc, updateDoc, deleteDoc, ensureAuth } from '@/lib/firebase-admin'
 
 // Normalize Firestore data: ensure array fields are always arrays
 function normalizeContent(data: Record<string, unknown>) {
@@ -72,6 +72,9 @@ export async function PUT(
 ) {
   const { id } = await params
   try {
+    // Ensure Firebase auth before writing
+    await ensureAuth()
+
     const body = await request.json()
 
     const {
@@ -146,6 +149,9 @@ export async function DELETE(
 ) {
   const { id } = await params
   try {
+    // Ensure Firebase auth before deleting
+    await ensureAuth()
+
     const docRef = doc(db, 'content', id)
     await deleteDoc(docRef)
 

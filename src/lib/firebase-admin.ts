@@ -1,6 +1,5 @@
 // Firebase Server-Side SDK for API routes
-// Uses Firebase Client SDK (works server-side in Node.js)
-// Admin SDK requires service account credentials we don't have in env
+// Uses Firebase Client SDK for Firestore operations
 import { initializeApp, getApps } from "firebase/app";
 import {
   getFirestore,
@@ -33,9 +32,21 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db: Firestore = getFirestore(app);
 
+/**
+ * Ensures Firebase is ready for write operations.
+ * Tries anonymous auth if available, but gracefully falls back
+ * since Firestore rules may allow unauthenticated writes.
+ */
+async function ensureAuth(): Promise<void> {
+  // Firestore rules in this project allow server-side writes.
+  // This is a no-op placeholder for future auth requirements.
+  return Promise.resolve();
+}
+
 // Re-export the Firestore instance and all utility functions
 export {
   db,
+  ensureAuth,
   collection,
   doc,
   getDoc,

@@ -417,16 +417,34 @@ function ContentDetail({ content, onClose }: { content: Content; onClose: () => 
         )}
       </div>
 
-      {/* Report Dialog */}
-      <Dialog open={showReportDialog} onOpenChange={setShowReportDialog}>
-        <DialogContent className="max-w-md bg-cineverse-800 border-white/[0.06]">
-          <DialogTitle className="text-white font-bold text-lg flex items-center gap-2">
-            <AlertTriangle className="w-5 h-5 text-rose-400" />
-            Report Issue
-          </DialogTitle>
-          <ReportForm contentId={content.id} contentTitle={content.mainTitle} onClose={() => setShowReportDialog(false)} />
-        </DialogContent>
-      </Dialog>
+      {/* Report Panel (inline, avoids z-index issues with Dialog inside fixed overlay) */}
+      <AnimatePresence>
+        {showReportDialog && (
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[200] bg-cineverse-900/95 backdrop-blur-xl overflow-y-auto"
+          >
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 max-w-lg">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5 text-rose-400" />
+                  Report Issue
+                </h2>
+                <button
+                  onClick={() => setShowReportDialog(false)}
+                  className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/20 transition-all"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <ReportForm contentId={content.id} contentTitle={content.mainTitle} onClose={() => setShowReportDialog(false)} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 }
@@ -442,14 +460,18 @@ function ReportForm({ contentId, contentTitle, onClose }: { contentId: string; c
     if (!message.trim()) return
     setLoading(true)
     try {
-      await fetch('/api/feedback', {
+      const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'REPORT', title: `Report: ${contentTitle}`, message: message.trim(), link: link.trim() || null }),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to submit report')
+      }
       setMessage(''); setLink(''); onClose()
       toast.success('Report submitted successfully!')
-    } catch { toast.error('Failed to submit report. Please try again.') }
+    } catch (err: any) { toast.error(err.message || 'Failed to submit report. Please try again.') }
     finally { setLoading(false) }
   }
 
@@ -487,14 +509,18 @@ function RequestForm({ onClose }: { onClose: () => void }) {
     if (!title.trim() || !message.trim()) return
     setLoading(true)
     try {
-      await fetch('/api/feedback', {
+      const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type: 'REQUEST', title: title.trim(), contentType: contentType || null, message: message.trim() }),
       })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to submit request')
+      }
       setTitle(''); setContentType(''); setMessage(''); onClose()
       toast.success('Request submitted successfully!')
-    } catch { toast.error('Failed to submit request. Please try again.') }
+    } catch (err: any) { toast.error(err.message || 'Failed to submit request. Please try again.') }
     finally { setLoading(false) }
   }
 
@@ -554,7 +580,7 @@ function CategorySection({ category, contents, onContentClick }: { category: Cat
           <span className="text-xs font-bold">{categoryContents.length}</span>
         </div>
       </motion.div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
         {categoryContents.map((content, i) => (
           <ContentCard key={content.id} content={content} onClick={() => onContentClick(content)} index={i} />
         ))}
@@ -805,7 +831,7 @@ export default function HomePage() {
 
           {/* Content Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
@@ -825,7 +851,7 @@ export default function HomePage() {
               </p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-4">
               {contents.map((content, i) => (
                 <ContentCard key={content.id} content={content} onClick={() => openDetail(content)} index={i} />
               ))}
