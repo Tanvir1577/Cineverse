@@ -595,13 +595,22 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
 
   if (category.contentIds && category.contentIds.length > 0 && loading) {
     return (
-      <section className="mb-14">
-        <div className="flex items-center gap-3 mb-6">
+      <section className="mb-8 sm:mb-14">
+        <div className="flex items-center gap-3 mb-4 sm:mb-6">
           <div className="w-1.5 h-7 bg-gradient-to-b from-purple-500 via-violet-500 to-cyan-500 rounded-full" />
-          <h2 className="text-xl sm:text-2xl font-black text-white">{category.name}</h2>
+          <h2 className="text-base sm:text-2xl font-black text-white">{category.name}</h2>
           <div className="ml-auto"><Loader2 className="w-4 h-4 text-purple-400 animate-spin" /></div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
+        {/* Mobile: horizontal scroll | sm+: grid */}
+        <div className="flex gap-3 overflow-x-auto pb-2 sm:hidden hide-scrollbar snap-x snap-mandatory">
+          {Array.from({ length: category.contentIds.length }).map((_, i) => (
+            <div key={i} className="shrink-0 w-[130px] space-y-2 snap-start">
+              <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
+              <Skeleton className="h-3 w-3/4 bg-cineverse-800" />
+            </div>
+          ))}
+        </div>
+        <div className="hidden sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
           {Array.from({ length: category.contentIds.length }).map((_, i) => (
             <div key={i} className="space-y-2">
               <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
@@ -616,15 +625,15 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
   if (categoryContents.length === 0) return null
 
   return (
-    <section className="mb-14">
+    <section className="mb-8 sm:mb-14">
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.5 }}
-        className="flex items-center gap-3 mb-6"
+        className="flex items-center gap-3 mb-4 sm:mb-6"
       >
         <div className="w-1.5 h-7 bg-gradient-to-b from-purple-500 via-violet-500 to-cyan-500 rounded-full" />
-        <h2 className="text-xl sm:text-2xl font-black text-white">{category.name}</h2>
+        <h2 className="text-base sm:text-2xl font-black text-white">{category.name}</h2>
         {category.description && (
           <span className="text-sm text-muted-foreground hidden sm:inline">— {category.description}</span>
         )}
@@ -632,8 +641,19 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <TrendingUp className="w-4 h-4" />
           <span className="text-xs font-bold">{categoryContents.length}</span>
         </div>
+        {/* Scroll hint on mobile */}
+        <ChevronRight className="w-4 h-4 text-purple-400/50 sm:hidden" />
       </motion.div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
+      {/* Mobile: horizontal scroll row */}
+      <div className="flex gap-3 overflow-x-auto pb-2 sm:hidden hide-scrollbar snap-x snap-mandatory">
+        {categoryContents.map((content, i) => (
+          <div key={content.id} className="shrink-0 w-[130px] snap-start">
+            <ContentCard content={content} onClick={() => onContentClick(content)} index={i} />
+          </div>
+        ))}
+      </div>
+      {/* sm+: normal grid */}
+      <div className="hidden sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
         {categoryContents.map((content, i) => (
           <ContentCard key={content.id} content={content} onClick={() => onContentClick(content)} index={i} />
         ))}
