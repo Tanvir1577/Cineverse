@@ -99,21 +99,21 @@ function ContentCard({ content, onClick, index }: { content: Content; onClick: (
 
           {/* Quality Badge */}
           {bestQuality && (
-            <div className="absolute top-1 left-1 sm:top-2 sm:left-2 z-10">
+            <div className="absolute top-2 left-2 z-10">
               <QualityBadge quality={bestQuality} size="xs" />
             </div>
           )}
 
           {/* Content Type Badge */}
-          <div className="absolute top-1 right-1 sm:top-2 sm:right-2 z-10">
-            <span className={`inline-flex items-center gap-0.5 sm:gap-1 text-[7px] sm:text-[10px] font-bold px-1 py-px sm:px-2 sm:py-0.5 rounded-md backdrop-blur-md shadow-sm ${
+          <div className="absolute top-2 right-2 z-10">
+            <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-md shadow-sm ${
               content.contentType === 'Movie' ? 'bg-purple-600/90 text-white' :
               content.contentType === 'Series' ? 'bg-cyan-600/90 text-white' :
               'bg-rose-600/90 text-white'
             }`}>
-              {content.contentType === 'Movie' ? <Film className="w-2 h-2 sm:w-2.5 sm:h-2.5" /> :
-               content.contentType === 'Series' ? <Tv className="w-2 h-2 sm:w-2.5 sm:h-2.5" /> :
-               <Sword className="w-2 h-2 sm:w-2.5 sm:h-2.5" />}
+              {content.contentType === 'Movie' ? <Film className="w-2.5 h-2.5" /> :
+               content.contentType === 'Series' ? <Tv className="w-2.5 h-2.5" /> :
+               <Sword className="w-2.5 h-2.5" />}
               {content.contentType}
             </span>
           </div>
@@ -132,19 +132,19 @@ function ContentCard({ content, onClick, index }: { content: Content; onClick: (
         </div>
 
         {/* Card Content */}
-        <CardContent className="p-1.5 sm:p-3 flex-1 flex flex-col gap-0.5 sm:gap-1">
+        <CardContent className="p-3 flex-1 flex flex-col gap-1">
           {content.secondaryTitle && (
-            <p className="text-[8px] sm:text-[10px] text-muted-foreground/70 truncate leading-tight">{content.secondaryTitle}</p>
+            <p className="text-[10px] text-muted-foreground/70 truncate leading-tight">{content.secondaryTitle}</p>
           )}
-          <h3 className="text-[11px] sm:text-sm font-bold text-white truncate leading-tight group-hover:text-purple-400 transition-colors duration-300">
+          <h3 className="text-sm font-bold text-white truncate leading-tight group-hover:text-purple-400 transition-colors duration-300">
             {content.mainTitle}
           </h3>
-          <div className="flex items-center gap-1 sm:gap-2 text-[9px] sm:text-[11px] text-muted-foreground mt-0.5">
+          <div className="flex items-center gap-2 text-[11px] text-muted-foreground mt-0.5">
             {content.releaseYear && (
-              <span className="flex items-center gap-0.5"><Calendar className="w-2 h-2 sm:w-2.5 sm:h-2.5" />{content.releaseYear}</span>
+              <span className="flex items-center gap-0.5"><Calendar className="w-2.5 h-2.5" />{content.releaseYear}</span>
             )}
             {content.imdbRating && (
-              <span className="flex items-center gap-0.5 text-amber-400"><Star className="w-2 h-2 sm:w-2.5 sm:h-2.5 fill-amber-400" />{content.imdbRating}</span>
+              <span className="flex items-center gap-0.5 text-amber-400"><Star className="w-2.5 h-2.5 fill-amber-400" />{content.imdbRating}</span>
             )}
           </div>
         </CardContent>
@@ -601,7 +601,7 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <h2 className="text-xl sm:text-2xl font-black text-white">{category.name}</h2>
           <div className="ml-auto"><Loader2 className="w-4 h-4 text-purple-400 animate-spin" /></div>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4 content-grid">
+        <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
           {Array.from({ length: category.contentIds.length }).map((_, i) => (
             <div key={i} className="space-y-2">
               <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
@@ -633,7 +633,7 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <span className="text-xs font-bold">{categoryContents.length}</span>
         </div>
       </motion.div>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4 content-grid">
+      <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
         {categoryContents.map((content, i) => (
           <ContentCard key={content.id} content={content} onClick={() => onContentClick(content)} index={i} />
         ))}
@@ -888,7 +888,7 @@ export default function HomePage() {
 
           {/* Content Grid */}
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4 content-grid">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
               {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
@@ -908,7 +908,7 @@ export default function HomePage() {
               </p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4 content-grid">
+            <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
               {contents.map((content, i) => (
                 <ContentCard key={content.id} content={content} onClick={() => openDetail(content)} index={i} />
               ))}
