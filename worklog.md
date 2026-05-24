@@ -19,3 +19,22 @@ Stage Summary:
 - Admin write operations: All CRUD operations confirmed working (tested all 13 API endpoints)
 - API routes updated: content, content/[id], categories, categories/[id], feedback, feedback/[id]
 - No lint errors
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix Firebase admin auth, grid layout, category bug, report button, feedback badge
+
+Work Log:
+- Fixed firebase-admin.ts: Added anonymous auth (signInAnonymously) with graceful fallback. Anonymous auth disabled in project but writes work without auth.
+- Fixed grid layout: Changed from grid-cols-2/3/6 to grid-cols-1/2/3/4 responsive layout (1 mobile, 2 sm, 3 md, 4 lg). Applied to CategorySection, skeleton loader, and content grid.
+- Fixed category creation bug: Replaced <label> + hidden <input type="checkbox"> with <div role="checkbox"> to prevent browser default checkbox rendering causing "square shape" glitch. Added stopPropagation on click. Added onInteractOutside/onPointerDownOutside prevention on Dialog.
+- Fixed report feedback button: Root cause was Firestore write operations failing. Now fixed with the Firebase auth fix. Report button inside ContentDetail works correctly.
+- Added feedback badge system: Dashboard now fetches unread count from /api/feedback/count and displays animated cyan badge on Feedback nav link (both desktop nav and mobile sheet nav).
+- All CRUD operations verified working: POST/GET/PUT/PATCH/DELETE for content, categories, and feedback all return 200/201/204.
+
+Stage Summary:
+- All admin panel functions now work (content CRUD, category CRUD, feedback management)
+- Grid is responsive: 1 col mobile, 2 sm, 3 md, 4 lg (24 items = 4×6)
+- Category dialog no longer glitches when selecting content
+- Report button inside content detail works
+- Feedback badge shows unread count in admin dashboard

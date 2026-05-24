@@ -479,7 +479,7 @@ export default function AdminCategoriesPage() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="bg-[#12121a] border-white/[0.08] max-w-2xl max-h-[90vh] overflow-hidden flex flex-col rounded-2xl">
+        <DialogContent className="bg-[#12121a] border-white/[0.08] max-w-2xl max-h-[90vh] overflow-hidden flex flex-col rounded-2xl" onInteractOutside={(e) => e.preventDefault()} onPointerDownOutside={(e) => e.preventDefault()}>
           <DialogTitle className="text-white text-lg flex items-center gap-2.5 px-1">
             {editingCategory ? (
               <>
@@ -596,9 +596,14 @@ export default function AdminCategoriesPage() {
                     {searchResults.map((content) => {
                       const isSelected = formContentIds.includes(content.id)
                       return (
-                        <label
+                        <div
                           key={content.id}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 ${
+                          role="checkbox"
+                          aria-checked={isSelected}
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); toggleContent(content.id) }}
+                          onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); toggleContent(content.id) } }}
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200 select-none ${
                             isSelected
                               ? 'bg-purple-500/10 hover:bg-purple-500/15'
                               : 'hover:bg-white/[0.03]'
@@ -611,12 +616,6 @@ export default function AdminCategoriesPage() {
                           }`}>
                             {isSelected && <Check className="h-3 w-3 text-white" />}
                           </div>
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => toggleContent(content.id)}
-                            className="sr-only"
-                          />
                           <div className="flex-1 min-w-0">
                             <p className="text-white/70 text-sm truncate">{content.mainTitle}</p>
                             {content.secondaryTitle && (
@@ -626,7 +625,7 @@ export default function AdminCategoriesPage() {
                           <span className="text-white/20 text-[10px] shrink-0 px-1.5 py-0.5 rounded-md bg-white/[0.04]">
                             {content.contentType}
                           </span>
-                        </label>
+                        </div>
                       )
                     })}
                   </div>

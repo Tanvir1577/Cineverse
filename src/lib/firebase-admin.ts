@@ -1,5 +1,5 @@
 // Firebase Server-Side SDK for API routes
-// Uses Firebase Client SDK for Firestore operations
+// Uses Firebase Client SDK for Firestore operations with anonymous auth for writes
 import { initializeApp, getApps } from "firebase/app";
 import {
   getFirestore,
@@ -18,6 +18,7 @@ import {
   type DocumentSnapshot,
   type QuerySnapshot,
 } from "firebase/firestore";
+import { getAuth, signInAnonymously } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -31,16 +32,30 @@ const firebaseConfig = {
 // Initialize Firebase (prevent re-initialization)
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const db: Firestore = getFirestore(app);
+const auth = getAuth(app);
+
+// Track auth attempt status
+let authAttempted = false;
+let authSucceeded = false;
 
 /**
  * Ensures Firebase is ready for write operations.
- * Tries anonymous auth if available, but gracefully falls back
+ * Tries anonymous auth if available, but gracefully continues
  * since Firestore rules may allow unauthenticated writes.
  */
 async function ensureAuth(): Promise<void> {
-  // Firestore rules in this project allow server-side writes.
-  // This is a no-op placeholder for future auth requirements.
-  return Promise.resolve();
+  // If we've already authenticated, or already tried and failed, skip
+  if (authSucceeded && auth.currentUser) return;
+  if (authAttempted) return;
+  
+  authAttempted = true;
+  try {
+    await signInAnonymously(auth);
+    authSucceeded = true;
+  } catch {
+    // Anonymous auth may not be enabled in this Firebase project.
+    // This is fine - Firestore rules may allow unauthenticated writes.
+  }
 }
 
 // Re-export the Firestore instance and all utility functions

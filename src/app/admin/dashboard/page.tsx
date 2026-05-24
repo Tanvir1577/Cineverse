@@ -77,6 +77,7 @@ export default function AdminDashboardPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [navOpen, setNavOpen] = useState(false)
+  const [unreadFeedback, setUnreadFeedback] = useState(0)
 
   useEffect(() => {
     if (!localStorage.getItem('adminUid')) { router.push('/admin/login'); return }
@@ -92,7 +93,14 @@ export default function AdminDashboardPage() {
     finally { setLoading(false) }
   }, [])
 
-  useEffect(() => { if (authChecked) fetchContents() }, [authChecked, fetchContents])
+  const fetchUnreadCount = useCallback(async () => {
+    try {
+      const res = await fetch('/api/feedback/count')
+      if (res.ok) { const d = await res.json(); setUnreadFeedback(d.count || 0) }
+    } catch { /* silent */ }
+  }, [])
+
+  useEffect(() => { if (authChecked) { fetchContents(); fetchUnreadCount() } }, [authChecked, fetchContents, fetchUnreadCount])
 
   const handleDelete = async (id: string) => {
     try {
@@ -170,10 +178,15 @@ export default function AdminDashboardPage() {
             <Link href="/admin/feedback">
               <Button
                 variant="ghost"
-                className="gap-2 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.04] transition-all duration-200 rounded-lg"
+                className="gap-2 text-sm text-white/40 hover:text-white/70 hover:bg-white/[0.04] transition-all duration-200 rounded-lg relative"
               >
                 <Activity className="h-4 w-4" />
                 Feedback
+                {unreadFeedback > 0 && (
+                  <span className="ml-1 h-5 min-w-5 px-1.5 rounded-full bg-cyan-500/25 text-cyan-300 text-[10px] font-bold flex items-center justify-center animate-pulse">
+                    {unreadFeedback > 99 ? '99+' : unreadFeedback}
+                  </span>
+                )}
               </Button>
             </Link>
           </nav>
@@ -218,8 +231,13 @@ export default function AdminDashboardPage() {
                     </Button>
                   </Link>
                   <Link href="/admin/feedback" onClick={() => setNavOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/50 hover:text-white/80 hover:bg-white/[0.04] rounded-lg">
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-white/50 hover:text-white/80 hover:bg-white/[0.04] rounded-lg relative">
                       <Activity className="h-4 w-4" />Feedback
+                      {unreadFeedback > 0 && (
+                        <span className="ml-auto h-5 min-w-5 px-1.5 rounded-full bg-cyan-500/25 text-cyan-300 text-[10px] font-bold flex items-center justify-center animate-pulse">
+                          {unreadFeedback > 99 ? '99+' : unreadFeedback}
+                        </span>
+                      )}
                     </Button>
                   </Link>
                   <div className="h-px bg-white/[0.06] my-3" />
