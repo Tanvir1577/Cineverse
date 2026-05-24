@@ -445,7 +445,7 @@ function ReportForm({ contentId, contentTitle, onClose }: { contentId: string; c
       await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'REPORT', title: `Report: ${contentTitle}`, message: message.trim(), link: link.trim() || undefined }),
+        body: JSON.stringify({ type: 'REPORT', title: `Report: ${contentTitle}`, message: message.trim(), link: link.trim() || null }),
       })
       setMessage(''); setLink(''); onClose()
       toast.success('Report submitted successfully!')
@@ -490,7 +490,7 @@ function RequestForm({ onClose }: { onClose: () => void }) {
       await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'REQUEST', title: title.trim(), contentType: contentType || undefined, message: message.trim() }),
+        body: JSON.stringify({ type: 'REQUEST', title: title.trim(), contentType: contentType || null, message: message.trim() }),
       })
       setTitle(''); setContentType(''); setMessage(''); onClose()
       toast.success('Request submitted successfully!')
@@ -554,7 +554,7 @@ function CategorySection({ category, contents, onContentClick }: { category: Cat
           <span className="text-xs font-bold">{categoryContents.length}</span>
         </div>
       </motion.div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
         {categoryContents.map((content, i) => (
           <ContentCard key={content.id} content={content} onClick={() => onContentClick(content)} index={i} />
         ))}
@@ -587,7 +587,7 @@ export default function HomePage() {
       if (search) params.set('search', search)
       if (type && type !== 'all') params.set('type', type)
       params.set('page', (pageNum || page).toString())
-      params.set('limit', '30')
+      params.set('limit', '24')
       const response = await fetch(`/api/content?${params.toString()}`)
       if (response.ok) {
         const data = await response.json()
@@ -805,7 +805,7 @@ export default function HomePage() {
 
           {/* Content Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
@@ -825,7 +825,7 @@ export default function HomePage() {
               </p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
               {contents.map((content, i) => (
                 <ContentCard key={content.id} content={content} onClick={() => openDetail(content)} index={i} />
               ))}

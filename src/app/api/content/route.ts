@@ -21,6 +21,17 @@ function normalizeContent(data: Record<string, unknown>) {
   return data
 }
 
+// Helper: remove undefined values (Firebase Client SDK doesn't allow undefined)
+function cleanData(data: Record<string, unknown>) {
+  const cleaned: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      cleaned[key] = value
+    }
+  }
+  return cleaned
+}
+
 // GET all content with optional filtering and search
 export async function GET(request: NextRequest) {
   try {
@@ -106,7 +117,7 @@ export async function POST(request: NextRequest) {
       fileSize,
       format,
       storyline,
-      downloadGroups = [],
+      downloadGroups,
     } = body
 
     if (!contentType || !mainTitle || !imageHtml) {
@@ -118,7 +129,7 @@ export async function POST(request: NextRequest) {
 
     const timestamp = new Date().toISOString()
 
-    const contentData = {
+    const contentData = cleanData({
       contentType,
       mainTitle,
       secondaryTitle: secondaryTitle || '',
@@ -137,7 +148,7 @@ export async function POST(request: NextRequest) {
       downloadGroups: downloadGroups || [],
       createdAt: timestamp,
       updatedAt: timestamp,
-    }
+    })
 
     const docRef = await addDoc(collection(db, 'content'), contentData)
 

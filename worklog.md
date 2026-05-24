@@ -179,3 +179,29 @@ Stage Summary:
 - Logo has no square background
 - Sheet accessibility error fixed
 - Lint passes clean
+
+---
+Task ID: fix-all-apis
+Agent: Main
+Task: Fix report button, grid layout, and all admin CRUD operations
+
+Work Log:
+- Discovered feedback API was failing because Firebase Client SDK rejects `undefined` values
+- Added `cleanData()` helper to remove undefined values before writing to Firestore
+- Fixed feedback POST route: contentType and link fields now use null instead of undefined
+- Fixed content POST/PUT routes: added cleanData() to strip undefined values
+- Fixed ReportForm in page.tsx: changed `link: link.trim() || undefined` to `link: link.trim() || null`
+- Fixed RequestForm in page.tsx: changed `contentType: contentType || undefined` to `contentType: contentType || null`
+- Fixed grid layout: changed from `grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4` to `grid-cols-2 sm:grid-cols-3 md:grid-cols-4`
+- Changed page limit from 30 to 24 (4 columns × 6 rows = 24 items per page)
+- Ran comprehensive 15-test E2E API test suite - ALL PASS
+- Verified all admin pages load with 200 status
+- Verified zero errors in dev server logs
+
+Stage Summary:
+- All CRUD operations working: Content (GET/POST/PUT/DELETE), Categories (GET/POST/PUT/DELETE), Feedback (GET/POST)
+- Report button inside content detail now works (API fixed)
+- Grid shows 4 columns on desktop, 3 on tablet, 2 on mobile
+- 24 items per page (4 cols × 6 rows)
+- All admin pages functional
+- No server errors

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, collection, doc, getDoc, updateDoc, deleteDoc } from '@/lib/firebase-admin'
+import { db, doc, getDoc, updateDoc, deleteDoc } from '@/lib/firebase-admin'
 
 // Normalize Firestore data: ensure array fields are always arrays
 function normalizeContent(data: Record<string, unknown>) {
@@ -20,6 +20,17 @@ function normalizeContent(data: Record<string, unknown>) {
     }))
   }
   return data
+}
+
+// Helper: remove undefined values (Firebase Client SDK doesn't allow undefined)
+function cleanData(data: Record<string, unknown>) {
+  const cleaned: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      cleaned[key] = value
+    }
+  }
+  return cleaned
 }
 
 // GET single content by ID
@@ -79,7 +90,7 @@ export async function PUT(
       fileSize,
       format,
       storyline,
-      downloadGroups = [],
+      downloadGroups,
     } = body
 
     if (!contentType || !mainTitle || !imageHtml) {
@@ -91,7 +102,7 @@ export async function PUT(
 
     const docRef = doc(db, 'content', id)
 
-    const updateData: Record<string, any> = {
+    const updateData = cleanData({
       contentType,
       mainTitle,
       secondaryTitle: secondaryTitle || '',
@@ -109,7 +120,7 @@ export async function PUT(
       storyline: storyline || '',
       downloadGroups: downloadGroups || [],
       updatedAt: new Date().toISOString(),
-    }
+    })
 
     await updateDoc(docRef, updateData)
 

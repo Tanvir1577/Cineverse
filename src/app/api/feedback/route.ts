@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db, collection, getDocs, addDoc, query, orderBy, deleteDoc, doc } from '@/lib/firebase-admin'
 
+// Helper: remove undefined values (Firebase Client SDK doesn't allow undefined)
+function cleanData(data: Record<string, unknown>) {
+  const cleaned: Record<string, unknown> = {}
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) {
+      cleaned[key] = value
+    }
+  }
+  return cleaned
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json()
@@ -17,16 +28,16 @@ export async function POST(request: Request) {
     const expiresAt = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString()
     const createdAt = now.toISOString()
 
-    const feedbackData = {
+    const feedbackData = cleanData({
       type,
       title,
-      contentType: type === 'REQUEST' ? contentType : null,
+      contentType: type === 'REQUEST' ? (contentType || null) : null,
       message,
-      link: type === 'REPORT' ? link : null,
+      link: type === 'REPORT' ? (link || null) : null,
       isRead: false,
       createdAt,
       expiresAt,
-    }
+    })
 
     const docRef = await addDoc(collection(db, 'feedback'), feedbackData)
 
