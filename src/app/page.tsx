@@ -562,6 +562,9 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
   const [categoryContents, setCategoryContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Serialize contentIds for stable useEffect dependency
+  const contentIdsKey = (category.contentIds || []).join(',')
+
   useEffect(() => {
     if (!category.contentIds || category.contentIds.length === 0) {
       setCategoryContents([])
@@ -569,6 +572,7 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
       return
     }
     // Fetch each content item by ID
+    let cancelled = false
     const fetchContent = async () => {
       try {
         setLoading(true)
@@ -581,12 +585,13 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
             } catch { return null }
           })
         )
-        setCategoryContents(results.filter(Boolean))
-      } catch { setCategoryContents([]) }
-      finally { setLoading(false) }
+        if (!cancelled) setCategoryContents(results.filter(Boolean))
+      } catch { if (!cancelled) setCategoryContents([]) }
+      finally { if (!cancelled) setLoading(false) }
     }
     fetchContent()
-  }, [category.contentIds])
+    return () => { cancelled = true }
+  }, [contentIdsKey])
 
   if (category.contentIds && category.contentIds.length > 0 && loading) {
     return (
@@ -596,7 +601,7 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <h2 className="text-xl sm:text-2xl font-black text-white">{category.name}</h2>
           <div className="ml-auto"><Loader2 className="w-4 h-4 text-purple-400 animate-spin" /></div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
           {Array.from({ length: category.contentIds.length }).map((_, i) => (
             <div key={i} className="space-y-2">
               <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
@@ -628,7 +633,7 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <span className="text-xs font-bold">{categoryContents.length}</span>
         </div>
       </motion.div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
         {categoryContents.map((content, i) => (
           <ContentCard key={content.id} content={content} onClick={() => onContentClick(content)} index={i} />
         ))}
@@ -680,7 +685,11 @@ export default function HomePage() {
     } catch (error) { console.error('Failed to fetch categories:', error) }
   }, [])
 
-  useEffect(() => { fetchContents(searchQuery, activeTab); fetchCategories() }, [searchQuery, activeTab, page, fetchContents, fetchCategories])
+  // Fetch categories once on mount (separate from content fetching)
+  useEffect(() => { fetchCategories() }, [fetchCategories])
+
+  // Fetch contents when search/tab/page changes
+  useEffect(() => { fetchContents(searchQuery, activeTab) }, [searchQuery, activeTab, page, fetchContents])
 
   useEffect(() => {
     const handleScroll = () => setShowScrollTop(window.scrollY > 400)
@@ -879,8 +888,8 @@ export default function HomePage() {
 
           {/* Content Grid */}
           {loading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-              {Array.from({ length: 8 }).map((_, i) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+              {Array.from({ length: 10 }).map((_, i) => (
                 <div key={i} className="space-y-2">
                   <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
                   <Skeleton className="h-3 w-3/4 bg-cineverse-800" />
@@ -899,7 +908,7 @@ export default function HomePage() {
               </p>
             </motion.div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
               {contents.map((content, i) => (
                 <ContentCard key={content.id} content={content} onClick={() => openDetail(content)} index={i} />
               ))}

@@ -58,3 +58,28 @@ Stage Summary:
 - Categories now fetch content by ID and display properly on frontend
 - Skills folder removed, no third-party name references in UI
 - All admin functions fully working
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix desktop grid to 5 columns × 4 rows, fix categories re-render loop, verify everything works
+
+Work Log:
+- Fixed desktop grid to 5 columns × 4 rows = 20 items per page (was previously 4 columns)
+- Changed all 4 grid instances in page.tsx to use lg:grid-cols-5 (5 columns on desktop)
+- Updated responsive breakpoints: grid-cols-2 (mobile), sm:grid-cols-3, md:grid-cols-4, lg:grid-cols-5
+- Fixed CategorySection re-render loop: Changed useEffect dependency from `category.contentIds` (array, new ref each render) to `contentIdsKey` (serialized string via join)
+- Added cleanup/abort logic to CategorySection useEffect to prevent state updates on unmounted components
+- Separated category fetching from content fetching: categories fetch once on mount, contents fetch when search/tab/page changes
+- Verified NO skills folder exists anywhere in the project
+- Verified NO z.ai/glm/zlm references in any source files
+- Verified all API routes return 200 (content, categories, feedback)
+- Lint check passes with no errors
+- Dev server running with no compilation errors
+
+Stage Summary:
+- Desktop grid: 5 columns × 4 rows = 20 items (responsive: 2 cols mobile, 3 sm, 4 md, 5 lg)
+- Categories no longer re-fetch infinitely — uses serialized string key for useEffect
+- Category/content fetch separation prevents unnecessary re-fetches
+- All code is clean — no AI branding text, no skills folder
+- Everything verified working
