@@ -83,3 +83,28 @@ Stage Summary:
 - Category/content fetch separation prevents unnecessary re-fetches
 - All code is clean — no AI branding text, no skills folder
 - Everything verified working
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Fix mobile grid to show 2 items per row (not 1), keep desktop 5-column layout
+
+Work Log:
+- Added bulletproof CSS rule in globals.css: `@media (max-width: 639px) { .content-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }` to force 2 columns on mobile
+- Added `content-grid` class to all 4 grid containers in page.tsx
+- Desktop layout UNCHANGED: `lg:grid-cols-5` (5 columns)
+- Mobile layout: `grid-cols-2` + CSS !important fallback (2 columns)
+- Reduced gap on mobile from `gap-3` to `gap-2` for better fit
+- Made card badges and text smaller on mobile for 2-column fit:
+  - Card padding: `p-1.5 sm:p-3`
+  - Title: `text-[11px] sm:text-sm`
+  - Secondary title: `text-[8px] sm:text-[10px]`
+  - Year/rating text: `text-[9px] sm:text-[11px]`
+  - Badge text: `text-[7px] sm:text-[10px]`
+  - Badge position: `top-1 left-1 sm:top-2 sm:left-2`
+- Lint check passes, dev server running with no errors
+
+Stage Summary:
+- Mobile: 2 items per row (guaranteed by CSS !important rule + Tailwind grid-cols-2)
+- Desktop: 5 columns × 4 rows = 20 items (UNCHANGED, NOT TOUCHED)
+- Card content scales down on mobile for better fit in 2-column layout

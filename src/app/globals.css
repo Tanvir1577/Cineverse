@@ -208,6 +208,13 @@
   aspect-ratio: 2/3;
 }
 
+/* Force 2 columns on mobile for content grids */
+@media (max-width: 639px) {
+  .content-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
 /* Smooth image loading */
 .img-loading {
   opacity: 0;
