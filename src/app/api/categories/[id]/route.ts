@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { db, doc, updateDoc, deleteDoc } from '@/lib/firebase-admin'
 
 // PUT update category
 export async function PUT(
@@ -11,7 +11,7 @@ export async function PUT(
     const body = await request.json()
     const { name, description, contentIds } = body
 
-    const updateData: any = {
+    const updateData: Record<string, any> = {
       updatedAt: new Date().toISOString()
     }
 
@@ -22,7 +22,8 @@ export async function PUT(
     if (description !== undefined) updateData.description = description
     if (contentIds !== undefined) updateData.contentIds = contentIds
 
-    await adminDb.collection('categories').doc(id).update(updateData)
+    const docRef = doc(db, 'categories', id)
+    await updateDoc(docRef, updateData)
 
     return NextResponse.json({ id, ...updateData })
   } catch (error) {
@@ -41,7 +42,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    await adminDb.collection('categories').doc(id).delete()
+    const docRef = doc(db, 'categories', id)
+    await deleteDoc(docRef)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Failed to delete category:', error)

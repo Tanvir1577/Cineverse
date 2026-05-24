@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { db, collection, getDocs, addDoc, query, orderBy } from '@/lib/firebase-admin'
 
 // Normalize Firestore data: ensure array fields are always arrays
 function normalizeContent(data: Record<string, unknown>) {
@@ -31,13 +31,14 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '24')
     const skip = (page - 1) * limit
 
-    const snapshot = await adminDb.collection('content').orderBy('createdAt', 'desc').get()
+    const q = query(collection(db, 'content'), orderBy('createdAt', 'desc'))
+    const snapshot = await getDocs(q)
     let contents: any[] = []
-    
-    snapshot.forEach((doc) => {
+
+    snapshot.forEach((docSnap) => {
       contents.push(normalizeContent({
-        id: doc.id,
-        ...doc.data()
+        id: docSnap.id,
+        ...docSnap.data()
       }))
     })
 
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
     // Search functionality
     if (search) {
       const searchLower = search.toLowerCase()
-      contents = contents.filter(content => 
+      contents = contents.filter(content =>
         (content.mainTitle && content.mainTitle.toLowerCase().includes(searchLower)) ||
         (content.secondaryTitle && content.secondaryTitle.toLowerCase().includes(searchLower)) ||
         (content.name && content.name.toLowerCase().includes(searchLower)) ||
@@ -116,7 +117,7 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = new Date().toISOString()
-    
+
     const contentData = {
       contentType,
       mainTitle,
@@ -138,8 +139,8 @@ export async function POST(request: NextRequest) {
       updatedAt: timestamp,
     }
 
-    const docRef = await adminDb.collection('content').add(contentData)
-    
+    const docRef = await addDoc(collection(db, 'content'), contentData)
+
     const createdContent = {
       id: docRef.id,
       ...contentData

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { db, doc, updateDoc, deleteDoc } from '@/lib/firebase-admin'
 
 export async function PATCH(
   request: Request,
@@ -10,7 +10,8 @@ export async function PATCH(
     const body = await request.json()
     const { isRead } = body
 
-    await adminDb.collection('feedback').doc(id).update({ isRead })
+    const docRef = doc(db, 'feedback', id)
+    await updateDoc(docRef, { isRead })
 
     return NextResponse.json({ id, isRead })
   } catch (error) {
@@ -28,7 +29,8 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    await adminDb.collection('feedback').doc(id).delete()
+    const docRef = doc(db, 'feedback', id)
+    await deleteDoc(docRef)
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     console.error('Failed to delete feedback:', error)

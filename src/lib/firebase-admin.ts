@@ -1,21 +1,50 @@
-// Firebase Admin SDK for server-side usage (API routes)
-import { initializeApp, getApps, cert } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+// Firebase Server-Side SDK for API routes
+// Uses Firebase Client SDK (works server-side in Node.js)
+// Admin SDK requires service account credentials we don't have in env
+import { initializeApp, getApps } from "firebase/app";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  where,
+  type Firestore,
+  type DocumentReference,
+  type DocumentSnapshot,
+  type QuerySnapshot,
+} from "firebase/firestore";
 
-function getAdminApp() {
-  if (getApps().length === 0) {
-    return initializeApp({
-      credential: cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-      }),
-    });
-  }
-  return getApps()[0];
-}
+const firebaseConfig = {
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+};
 
-const adminApp = getAdminApp();
-const adminDb = getFirestore(adminApp);
+// Initialize Firebase (prevent re-initialization)
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+const db: Firestore = getFirestore(app);
 
-export { adminDb };
+// Re-export the Firestore instance and all utility functions
+export {
+  db,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  orderBy,
+  where,
+};
+export type { DocumentReference, DocumentSnapshot, QuerySnapshot };

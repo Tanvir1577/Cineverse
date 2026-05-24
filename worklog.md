@@ -151,3 +151,31 @@ Stage Summary:
 - Consistent design language: rounded-xl inputs, accent lines on cards, dual-ring spinners
 - All existing functionality preserved (Firebase auth, CRUD operations, state management)
 - Lint passes clean with 0 errors and 0 warnings
+
+---
+Task ID: fix-content-api
+Agent: Main
+Task: Fix content not showing - Firebase Admin SDK credentials missing
+
+Work Log:
+- Discovered .env.local file was completely missing, causing Firebase Admin SDK to fail
+- All API routes returning 500 errors because FIREBASE_PROJECT_ID was undefined
+- Rewrote firebase-admin.ts to use Firebase Client SDK instead of Admin SDK
+- Updated all 7 API route files to use Client SDK API (collection/doc/getDocs/addDoc/updateDoc/deleteDoc/query/orderBy/where)
+- Changed docSnap.exists (property) to docSnap.exists() (method) for Client SDK
+- Created .env.local with Firebase client config (apiKey, authDomain, projectId, storageBucket)
+- Removed Request Content button from ContentDetail (kept only Report Issue button)
+- Fixed header transparency - now fully opaque (bg-cineverse-900) when scrolled, semi-transparent at top
+- Fixed logo square area - added background: transparent and drop-shadow instead of square background
+- Fixed Sheet component DialogTitle accessibility error by adding VisuallyHidden.Root title
+- Installed @radix-ui/react-visually-hidden package
+
+Stage Summary:
+- All 302 content items now loading correctly from Firebase
+- Content API returning 200 status
+- Categories API returning 200 status
+- Content detail only shows Report button (no Request button)
+- Header now solid on scroll, transparent at top
+- Logo has no square background
+- Sheet accessibility error fixed
+- Lint passes clean

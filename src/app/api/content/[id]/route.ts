@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { adminDb } from '@/lib/firebase-admin'
+import { db, collection, doc, getDoc, updateDoc, deleteDoc } from '@/lib/firebase-admin'
 
 // Normalize Firestore data: ensure array fields are always arrays
 function normalizeContent(data: Record<string, unknown>) {
@@ -29,10 +29,10 @@ export async function GET(
 ) {
   const { id } = await params
   try {
-    const docRef = adminDb.collection('content').doc(id)
-    const docSnap = await docRef.get()
+    const docRef = doc(db, 'content', id)
+    const docSnap = await getDoc(docRef)
 
-    if (!docSnap.exists) {
+    if (!docSnap.exists()) {
       return NextResponse.json(
         { error: 'Content not found' },
         { status: 404 }
@@ -89,9 +89,9 @@ export async function PUT(
       )
     }
 
-    const docRef = adminDb.collection('content').doc(id)
-    
-    const updateData = {
+    const docRef = doc(db, 'content', id)
+
+    const updateData: Record<string, any> = {
       contentType,
       mainTitle,
       secondaryTitle: secondaryTitle || '',
@@ -111,7 +111,7 @@ export async function PUT(
       updatedAt: new Date().toISOString(),
     }
 
-    await docRef.update(updateData)
+    await updateDoc(docRef, updateData)
 
     const updatedContent = {
       id,
@@ -135,8 +135,8 @@ export async function DELETE(
 ) {
   const { id } = await params
   try {
-    const docRef = adminDb.collection('content').doc(id)
-    await docRef.delete()
+    const docRef = doc(db, 'content', id)
+    await deleteDoc(docRef)
 
     return NextResponse.json({ success: true })
   } catch (error) {
