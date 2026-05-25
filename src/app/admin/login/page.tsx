@@ -91,21 +91,30 @@ export default function AdminLoginPage() {
     setError('')
     setLoading(true)
     try {
+      const { signInWithEmailAndPassword } = await import('firebase/auth')
+      const { auth } = await import('@/lib/firebase')
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const idToken = await userCredential.user.getIdToken()
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ idToken }),
       })
-      const data = await res.json()
       if (!res.ok) {
-        setError(data.error || 'Invalid credentials')
-        return
+        throw new Error('Verification failed')
       }
-      localStorage.setItem('adminUid', 'admin')
-      localStorage.setItem('adminEmail', email)
+      localStorage.setItem('adminUid', userCredential.user.uid)
+      localStorage.setItem('adminEmail', userCredential.user.email || '')
       router.push('/admin/dashboard')
-    } catch {
-      setError('Login failed. Please try again.')
+    } catch (err: unknown) {
+      const e = err as { code?: string; message?: string }
+      if (e.code === 'auth/invalid-credential' || e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') {
+        setError('Invalid email or password')
+      } else if (e.code === 'auth/too-many-requests') {
+        setError('Too many attempts. Please try later.')
+      } else {
+        setError(e.message || 'Login failed')
+      }
     } finally {
       setLoading(false)
     }
