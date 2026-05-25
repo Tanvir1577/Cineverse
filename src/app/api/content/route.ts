@@ -1,38 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db, collection, getDocs, addDoc, query, orderBy, ensureAuth } from '@/lib/firebase-admin'
+import { firestore } from '@/lib/firebase'
+import { collection, getDocs, addDoc, query, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore'
 
-// Normalize Firestore data: ensure array fields are always arrays
-function normalizeContent(data: Record<string, unknown>) {
-  const arrayFields = ['genre', 'language', 'subtitle', 'quality']
-  for (const field of arrayFields) {
-    if (!Array.isArray(data[field])) {
-      data[field] = data[field] ? [data[field]] : []
-    }
-  }
-  if (Array.isArray(data.downloadGroups)) {
-    data.downloadGroups = data.downloadGroups.map((group: any) => ({
-      ...group,
-      links: Array.isArray(group.links) ? group.links.map((link: any) => ({
-        ...link,
-        quality: Array.isArray(link.quality) ? link.quality : link.quality ? [link.quality] : []
-      })) : []
-    }))
-  }
-  return data
-}
-
-// Helper: remove undefined values (Firebase Client SDK doesn't allow undefined)
-function cleanData(data: Record<string, unknown>) {
-  const cleaned: Record<string, unknown> = {}
-  for (const [key, value] of Object.entries(data)) {
-    if (value !== undefined) {
-      cleaned[key] = value
-    }
-  }
-  return cleaned
-}
-
-// GET all content with optional filtering and search
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -42,23 +11,22 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '24')
     const skip = (page - 1) * limit
 
-    const q = query(collection(db, 'content'), orderBy('createdAt', 'desc'))
-    const snapshot = await getDocs(q)
+    const contentCollection = collection(firestore, 'content')
+    let q = query(contentCollection, orderBy('createdAt', 'desc'))
+    const querySnapshot = await getDocs(q)
     let contents: any[] = []
 
-    snapshot.forEach((docSnap) => {
-      contents.push(normalizeContent({
-        id: docSnap.id,
-        ...docSnap.data()
-      }))
+    querySnapshot.forEach((doc) => {
+      contents.push({
+        id: doc.id,
+        ...doc.data()
+      })
     })
 
-    // Filter by content type if specified
     if (type && type !== 'all') {
       contents = contents.filter(content => content.contentType === type)
     }
 
-    // Search functionality
     if (search) {
       const searchLower = search.toLowerCase()
       contents = contents.filter(content =>
@@ -96,32 +64,10 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST create new content
 export async function POST(request: NextRequest) {
   try {
-    // Ensure Firebase auth before writing
-    await ensureAuth()
-
     const body = await request.json()
-
-    const {
-      contentType,
-      mainTitle,
-      secondaryTitle,
-      imageHtml,
-      name,
-      season,
-      imdbRating,
-      releaseYear,
-      genre,
-      language,
-      subtitle,
-      quality,
-      fileSize,
-      format,
-      storyline,
-      downloadGroups,
-    } = body
+    const { contentType, mainTitle, secondaryTitle, imageHtml, name, season, imdbRating, releaseYear, genre, language, subtitle, quality, fileSize, format, storyline, downloadGroups = [] } = body
 
     if (!contentType || !mainTitle || !imageHtml) {
       return NextResponse.json(
@@ -131,8 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = new Date().toISOString()
-
-    const contentData = cleanData({
+    const contentData = {
       contentType,
       mainTitle,
       secondaryTitle: secondaryTitle || '',
@@ -151,21 +96,13 @@ export async function POST(request: NextRequest) {
       downloadGroups: downloadGroups || [],
       createdAt: timestamp,
       updatedAt: timestamp,
-    })
-
-    const docRef = await addDoc(collection(db, 'content'), contentData)
-
-    const createdContent = {
-      id: docRef.id,
-      ...contentData
     }
 
+    const docRef = await addDoc(collection(firestore, 'content'), contentData)
+    const createdContent = { id: docRef.id, ...contentData }
     return NextResponse.json(createdContent, { status: 201 })
   } catch (error) {
     console.error('Error creating content:', error)
-    return NextResponse.json(
-      { error: 'Failed to create content' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to create content' }, { status: 500 })
   }
 }

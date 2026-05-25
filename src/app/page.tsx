@@ -561,9 +561,25 @@ function RequestForm({ onClose }: { onClose: () => void }) {
 function CategorySection({ category, onContentClick }: { category: Category; onContentClick: (c: Content) => void }) {
   const [categoryContents, setCategoryContents] = useState<Content[]>([])
   const [loading, setLoading] = useState(true)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
 
-  // Serialize contentIds for stable useEffect dependency
   const contentIdsKey = (category.contentIds || []).join(',')
+
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    setCanScrollLeft(el.scrollLeft > 10)
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 10)
+  }, [])
+
+  const scrollBy = (dir: 'left' | 'right') => {
+    const el = scrollRef.current
+    if (!el) return
+    const amount = dir === 'left' ? -340 : 340
+    el.scrollBy({ left: amount, behavior: 'smooth' })
+  }
 
   useEffect(() => {
     if (!category.contentIds || category.contentIds.length === 0) {
@@ -571,7 +587,6 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
       setLoading(false)
       return
     }
-    // Fetch each content item by ID
     let cancelled = false
     const fetchContent = async () => {
       try {
@@ -593,6 +608,14 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
     return () => { cancelled = true }
   }, [contentIdsKey])
 
+  useEffect(() => {
+    checkScroll()
+    const el = scrollRef.current
+    if (!el) return
+    el.addEventListener('scroll', checkScroll)
+    return () => el.removeEventListener('scroll', checkScroll)
+  }, [categoryContents, checkScroll])
+
   if (category.contentIds && category.contentIds.length > 0 && loading) {
     return (
       <section className="mb-8 sm:mb-14">
@@ -601,18 +624,9 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <h2 className="text-base sm:text-2xl font-black text-white">{category.name}</h2>
           <div className="ml-auto"><Loader2 className="w-4 h-4 text-purple-400 animate-spin" /></div>
         </div>
-        {/* Mobile: horizontal scroll | sm+: grid */}
-        <div className="flex gap-3 overflow-x-auto pb-2 sm:hidden hide-scrollbar snap-x snap-mandatory">
+        <div className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar snap-x snap-mandatory">
           {Array.from({ length: category.contentIds.length }).map((_, i) => (
             <div key={i} className="shrink-0 w-[130px] space-y-2 snap-start">
-              <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
-              <Skeleton className="h-3 w-3/4 bg-cineverse-800" />
-            </div>
-          ))}
-        </div>
-        <div className="hidden sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
-          {Array.from({ length: category.contentIds.length }).map((_, i) => (
-            <div key={i} className="space-y-2">
               <Skeleton className="aspect-[2/3] rounded-xl bg-cineverse-800" />
               <Skeleton className="h-3 w-3/4 bg-cineverse-800" />
             </div>
@@ -641,22 +655,36 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
           <TrendingUp className="w-4 h-4" />
           <span className="text-xs font-bold">{categoryContents.length}</span>
         </div>
-        {/* Scroll hint on mobile */}
-        <ChevronRight className="w-4 h-4 text-purple-400/50 sm:hidden" />
       </motion.div>
-      {/* Mobile: horizontal scroll row */}
-      <div className="flex gap-3 overflow-x-auto pb-2 sm:hidden hide-scrollbar snap-x snap-mandatory">
-        {categoryContents.map((content, i) => (
-          <div key={content.id} className="shrink-0 w-[130px] snap-start">
-            <ContentCard content={content} onClick={() => onContentClick(content)} index={i} />
-          </div>
-        ))}
-      </div>
-      {/* sm+: normal grid */}
-      <div className="hidden sm:grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 content-grid">
-        {categoryContents.map((content, i) => (
-          <ContentCard key={content.id} content={content} onClick={() => onContentClick(content)} index={i} />
-        ))}
+      <div className="relative">
+        {canScrollLeft && (
+          <button
+            onClick={() => scrollBy('left')}
+            className="absolute left-0 top-0 bottom-2 z-10 w-10 sm:w-12 bg-gradient-to-r from-[#0a0a0f] to-transparent flex items-center justify-start pl-1 opacity-70 hover:opacity-100 transition-opacity"
+            aria-label="Scroll left"
+          >
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400 rotate-180" />
+          </button>
+        )}
+        {canScrollRight && (
+          <button
+            onClick={() => scrollBy('right')}
+            className="absolute right-0 top-0 bottom-2 z-10 w-10 sm:w-12 bg-gradient-to-l from-[#0a0a0f] to-transparent flex items-center justify-end pr-1 opacity-70 hover:opacity-100 transition-opacity"
+            aria-label="Scroll right"
+          >
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
+          </button>
+        )}
+        <div
+          ref={scrollRef}
+          className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar snap-x snap-mandatory scroll-smooth"
+        >
+          {categoryContents.map((content, i) => (
+            <div key={content.id} className="shrink-0 w-[130px] sm:w-[160px] md:w-[175px] snap-start">
+              <ContentCard content={content} onClick={() => onContentClick(content)} index={i} />
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
