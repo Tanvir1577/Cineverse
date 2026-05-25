@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
     const skip = (page - 1) * limit
 
     const contentCollection = collection(firestore, 'content')
-    let q = query(contentCollection, orderBy('createdAt', 'desc'))
+    let q = query(contentCollection, orderBy('updatedAt', 'desc'))
     const querySnapshot = await getDocs(q)
     let contents: any[] = []
 
