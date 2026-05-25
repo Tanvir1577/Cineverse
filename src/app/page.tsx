@@ -660,19 +660,19 @@ function CategorySection({ category, onContentClick }: { category: Category; onC
         {canScrollLeft && (
           <button
             onClick={() => scrollBy('left')}
-            className="absolute left-0 top-0 bottom-2 z-10 w-10 sm:w-12 bg-gradient-to-r from-[#0a0a0f] to-transparent flex items-center justify-start pl-1 opacity-70 hover:opacity-100 transition-opacity"
+            className="absolute left-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/70 backdrop-blur-sm border border-white/10 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-lg shadow-black/50"
             aria-label="Scroll left"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400 rotate-180" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 rotate-180" />
           </button>
         )}
         {canScrollRight && (
           <button
             onClick={() => scrollBy('right')}
-            className="absolute right-0 top-0 bottom-2 z-10 w-10 sm:w-12 bg-gradient-to-l from-[#0a0a0f] to-transparent flex items-center justify-end pr-1 opacity-70 hover:opacity-100 transition-opacity"
+            className="absolute right-1 top-1/2 -translate-y-1/2 z-10 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-black/70 backdrop-blur-sm border border-white/10 flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity shadow-lg shadow-black/50"
             aria-label="Scroll right"
           >
-            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400" />
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
           </button>
         )}
         <div
