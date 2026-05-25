@@ -91,24 +91,21 @@ export default function AdminLoginPage() {
     setError('')
     setLoading(true)
     try {
-      const { getAuth, signInWithEmailAndPassword } = await import('firebase/auth')
-      const { auth } = await import('@/lib/firebase')
-
-      const userCredential = await signInWithEmailAndPassword(auth, email, password)
-      localStorage.setItem('adminUid', userCredential.user.uid)
-      localStorage.setItem('adminEmail', userCredential.user.email || '')
-      router.push('/admin/dashboard')
-    } catch (err: unknown) {
-      const firebaseError = err as { code?: string }
-      const code = firebaseError.code || ''
-      switch (code) {
-        case 'auth/invalid-credential': setError('Invalid credentials. Please try again.'); break
-        case 'auth/user-not-found': setError('No account found with this email.'); break
-        case 'auth/wrong-password': setError('Incorrect password. Please try again.'); break
-        case 'auth/invalid-email': setError('Invalid email format.'); break
-        case 'auth/too-many-requests': setError('Too many attempts. Please try later.'); break
-        default: setError('Login failed. Please check your credentials.')
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Invalid credentials')
+        return
       }
+      localStorage.setItem('adminUid', 'admin')
+      localStorage.setItem('adminEmail', email)
+      router.push('/admin/dashboard')
+    } catch {
+      setError('Login failed. Please try again.')
     } finally {
       setLoading(false)
     }
